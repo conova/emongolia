@@ -8,22 +8,16 @@ import * as eValidation from '../../validations/emongolia.validation';
 @injectable()
 export default class EMongoliaRoute {
     private readonly _controller: eMongoliaController;
-    private readonly authenticator: Authentication;
     private _router = express.Router();
 
-    constructor(eMongoliaController: eMongoliaController, authentication: Authentication) {
+    constructor(eMongoliaController: eMongoliaController) {
         this._controller = eMongoliaController;
-        this.authenticator = authentication;
     }
 
     public get router() {
         this._router.route('/redirect/:requestId').get(this._controller.redirect);
-        this._router
-            .route('/uri')
-            .post(validate(eValidation.getUri), this._controller.getUri);
-        this._router
-            .route('/check')
-            .get(validate(eValidation.checkRequest), this._controller.requestStatus);
+        this._router.route('/uri').post(validate(eValidation.getUri), this._controller.getUri);
+        this._router.route('/check').get(validate(eValidation.checkRequest), this._controller.requestStatus);
         return this._router;
     }
 }

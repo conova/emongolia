@@ -1,0 +1,28 @@
+export default {
+    request: {
+        auth: null,
+        civilId: null,
+        regnum: 'НИ78010123',
+    },
+    requestId: 'bff6f177-4f51-4feb-a6fa-f6be43ae21e3',
+    response: {
+        addressApartmentName: '23',
+        addressDetail: '12',
+        addressRegionName: '3 хороолол',
+        addressStreetName: 'их сургуулийн',
+        addressTownName: null,
+        aimagCityCode: '11',
+        aimagCityName: 'Улаанбаатар',
+        bagKhorooCode: '71',
+        bagKhorooName: '11-р хороо',
+        firstname: 'Тэрбиш',
+        fullAddress: 'Улаанбаатар Сүхбаатар 11-р хороо, 3 хороолол  ногоон нуур гудамж 23-р байр 12  тоот',
+        lastname: 'Энэбиш',
+        regnum: 'ни78010123',
+        soumDistrictCode: '19',
+        soumDistrictName: 'Сүхбаатар',
+        surname: 'Боржигон',
+    },
+    resultCode: 0,
+    resultMessage: 'амжилттай',
+};

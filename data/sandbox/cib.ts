@@ -1,0 +1,65 @@
+export default {
+    НИ78010123: {
+        code: '0,',
+        response: {
+            systemName: 'BurenScore',
+            loadDate: '2022-08-30T12:10:00.819Z',
+            updateDate: '',
+            registerNumber: 'НИ78010123',
+            loans: [
+                {
+                    status: 'UNPAID',
+                    type: 'Loan',
+                    ownershipType: 'Owner',
+                    bankCode: '5004',
+                    bankName: '5004',
+                    startDate: '2022-08-23',
+                    maturityDate: '2022-12-25',
+                    initialAmount: 60000,
+                    balance: 10000,
+                    currencyCode: 'MNT',
+                    interestRateYear: 10,
+                    productType: '',
+                },
+            ],
+        },
+        title: 'Success',
+    },
+    НЭ83010723: {
+        code: '0,',
+        response: {
+            systemName: 'SainScore',
+            loadDate: '2022-08-29T12:10:00.819Z',
+            updateDate: '',
+            registerNumber: 'НЭ83010723',
+            loans: [],
+        },
+        title: 'Success',
+    },
+    ИК94011123: {
+        code: '0,',
+        response: {
+            systemName: 'SainScore',
+            loadDate: '2022-05-12T12:10:00.819Z',
+            updateDate: '',
+            registerNumber: 'ИК94011123',
+            loans: [
+                {
+                    status: 'UNPAID',
+                    type: 'Loan',
+                    ownershipType: 'Owner',
+                    bankCode: '5004',
+                    bankName: '5004',
+                    startDate: '2022-08-23',
+                    maturityDate: '2022-12-25',
+                    initialAmount: 60000,
+                    balance: 10000,
+                    currencyCode: 'MNT',
+                    interestRateYear: 10,
+                    productType: '',
+                },
+            ],
+        },
+        title: 'Success',
+    },
+};

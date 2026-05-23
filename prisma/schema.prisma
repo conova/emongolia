@@ -1,0 +1,70 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "darwin-arm64", "linux-arm64-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model request {
+  id        Int            @id @default(autoincrement())
+  unique    String         @db.VarChar(255)
+  callback  String         @db.VarChar(300)
+  state     String         @unique
+  services  Json[]
+  status    STATUS_REQUEST
+  scope     String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime?      @updatedAt()
+}
+
+model services {
+  id        Int             @id @default(autoincrement())
+  key       String          @unique /// Emongolia code
+  code      SERVICES        @unique /// Custom code
+  desc      String /// Description
+  wsdl      String?
+  status    STATUS_SERVICES @default(ACTIVE)
+  params    Json
+  createdAt DateTime        @default(now())
+}
+
+enum STATUS_REQUEST {
+  PENDING
+  DONE
+  ENTERED
+  FAILED
+}
+
+enum STATUS_SERVICES {
+  ACTIVE
+  INACTIVE
+}
+
+enum SERVICES {
+  CITIZEN_ID_CARD_INFO
+  CITIZEN_BIRTH_INFO
+  CITIZEN_ADDRESS_INFO
+  CITIZEN_MARRIAGE_INFO
+  CITIZEN_MARRIAGE_DIVORCE_INFO
+  AUTHORIZE_CITIZEN
+  CITIZEN_INFO
+  CHECK_CITIZEN_REGNUM
+  CITIZEN_NO_MARRIEGE_INFO
+  PROPERTY_INFO
+  PROPERTY_LIST
+  LEGAL_ENTITY_INFO_WITH_REGNUM
+  VEHICLE_INFO_OLD
+  VEHICLE_OWNER_HISTORY_LIST
+  VEHICLE_PENALTY_LIST
+  CITIZEN_VEHICLE_LIST
+  DRIVER_LICENSE_INFO
+  SALARY_INCOME
+  CITIZEN_PENSION_INQUIRY
+  TAX_PAYER_INFO
+  VEHICLE_PAID_TAX_HISTORY
+  VEHICLE_TAX_PAYABLE_INFO
+  VEHICLE_INFO
+}

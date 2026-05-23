@@ -1,0 +1,88 @@
+image: node:lts
+ 
+services:
+  - name: postgres:alpine
+    alias: postgres
+ 
+variables:
+ 
+  DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}"
+  IMAGE_NAME: igw-emongolia
+  TAG_COMMIT: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_NAME}
+  DOCKER_TLS_CERTDIR: ""
+ 
+stages:
+  - test
+  - setup
+  - coding_standard
+  - qa
+  - production
+
+cache:
+  paths:
+    - node_modules/
+
+Setup NodeJS dependencies:
+  stage: setup
+  only:
+    - qa
+  script:
+    - npm install
+    - npx prisma generate --schema ./prisma/schema.prisma
+  cache:
+    paths:
+      - node_modules/
+
+Check coding standard:
+  stage: coding_standard
+  only:
+    - qa
+  script:
+    - npm run prettier
+
+QA-Building image and Pushing to ECR:
+  image: docker:stable
+  stage: qa
+  only:
+    - qa
+  services:
+    - docker:dind
+  before_script:
+    - apk add --no-cache python3 py3-pip
+    - apk add git curl
+    - pip3 install --no-cache-dir awscli
+    - aws ecr get-login-password --region "${AWS_DEFAULT_REGION}" | docker login --username AWS --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+    - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
+  script:
+    - curl --header "PRIVATE-TOKEN:${VERSION_TOKEN}" "${QA_VERSION_URL}" | sh
+
+Deploying to TEST-SERVER:
+  stage: test
+  only:
+    - test
+  before_script:
+    - apt-get update -y
+    - apt install openssh-server -y
+  script:
+    - mkdir -p ~/.ssh
+    - echo "$UBUNTU_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - ssh -i ~/.ssh/id_rsa ubuntu@172.31.24.28 "cd $CI_PROJECT_NAME && git checkout test && git pull && sudo docker-compose restart"
+
+PROD-Deploying to prod:
+  image: docker:stable
+  stage: production
+  when: manual
+  only:
+    - master
+  services:
+    - docker:dind
+  before_script:
+    - apk add --no-cache python3 py3-pip
+    - apk add git curl
+    - pip3 install --no-cache-dir awscli
+    - aws ecr get-login-password --region "${AWS_DEFAULT_REGION}" | docker login --username AWS --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+    - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
+  script:
+    - curl --header "PRIVATE-TOKEN:${VERSION_TOKEN}" "${PROD_VERSION_URL}" | sh

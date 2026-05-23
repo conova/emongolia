@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Security-Policy" content="script-src 'nonce-i2726c7f26b'" />
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PAYON</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100vh;
+                background-color: #f9f9f9;
+                display: flex;
+            }
+            .box {
+                margin: auto;
+                max-width: 320px;
+                width: 100%;
+                padding: 12px;
+                position: relative;
+            }
+            .box svg {
+                width: 100%;
+                height: auto;
+            }
+            h1 {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                margin: 0;
+                font-size: 18px;
+                color: #82869b;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="box">
+            <svg width="311" height="81" viewBox="0 0 311 81" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M273.758 29.5104L273.758 4.95054C273.758 4.56754 274.129 4.23241 274.554 4.23241L301.793 4.23241C302.218 4.23241 302.589 4.56754 302.589 4.95054L302.589 29.5104C302.589 29.8934 302.218 30.2285 301.793 30.2285L274.554 30.2285C274.129 30.1806 273.758 29.8934 273.758 29.5104Z"
+                    stroke="#FFA500"
+                    stroke-width="2"
+                    stroke-miterlimit="10"
+                />
+                <path
+                    d="M261.018 54.7795L274.132 66.6047C274.345 66.7962 274.345 67.0834 274.132 67.2749L261.018 79.1C260.805 79.2915 260.487 79.2915 260.274 79.1L247.159 67.2749C246.947 67.0834 246.947 66.7962 247.159 66.6047L260.274 54.7795C260.487 54.588 260.805 54.588 261.018 54.7795Z"
+                    stroke="#FFA500"
+                    stroke-width="1.7064"
+                    stroke-miterlimit="10"
+                />
+                <path
+                    d="M20.9911 46.5928L28.4777 53.3432C28.5839 53.4389 28.5839 53.6304 28.4777 53.7262L20.9911 60.4765C20.8849 60.5723 20.6725 60.5723 20.5663 60.4765L13.0796 53.7262C12.9735 53.6304 12.9735 53.4389 13.0796 53.3432L20.5663 46.5928C20.6725 46.4971 20.8849 46.4971 20.9911 46.5928Z"
+                    fill="#FFA500"
+                />
+                <path
+                    d="M288 68.917L309.398 49.6234"
+                    stroke="#FFA500"
+                    stroke-width="2"
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+                <path
+                    d="M1 20.4917L22.1325 1.43749"
+                    stroke="#FFA500"
+                    stroke-width="2"
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+            </svg>
+            <h1 id="result">Амжилттай</h1>
+        </div>
+        <script type="text/javascript" nonce="i2726c7f26b">
+            const searchParams = new URLSearchParams(window.location.search);
+            const result = searchParams.get('result');
+            const errorMessage = searchParams.get('errorMessage');
+            document.getElementById('result').innerText = result === 'success' ? 'Амжилттай' : 'Алдаа гарлаа!';
+
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'click',
+                    response: {
+                        result,
+                        errorMessage
+                    },
+                })
+            );
+        </script>
+    </body>
+</html>

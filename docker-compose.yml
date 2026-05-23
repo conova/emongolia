@@ -1,0 +1,29 @@
+version: '2'
+services:
+  node-app:
+    container_name: emongolia_node_app_ts
+    build: .
+    ports:
+      - '3039:3000'
+    volumes:
+      - .:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - postgresql
+    command: npm run dev:migrate
+
+  postgresql:
+    container_name: emongolia_postgresql_ts
+    image: postgres:14.4-alpine
+    restart: on-failure
+    environment:
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRES_DATABASE: ${POSTGRESQL_DATABASE}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - '5436:5432'
+
+volumes:
+  postgres:

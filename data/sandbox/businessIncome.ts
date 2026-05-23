@@ -1,0 +1,62 @@
+export default {
+    НИ78010123: {
+        request: {
+            regnum: 'НИ78010123',
+        },
+        requestId: 'b239b17c-b8ea-4384-a0f3-a95f76d79420',
+        response: {
+            bankCode: '040',
+            accountId: '5800910112',
+            currencyCode: 'MNT',
+            enoughMonthCount: 15,
+            continuouslyMonthCount: 12,
+            monthlyIncomeAmount: 450000,
+            isEnoughIncomeAmount: 1,
+            isStableIncomeAmount: 1,
+            isDropAvgLastTwoMonths: 1,
+            isEnoughIncomeAmountForLastMonths: 1,
+        },
+        resultCode: 0,
+        resultMessage: 'амжилттай',
+    },
+    НЭ83010723: {
+        request: {
+            regnum: 'НЭ83010723',
+        },
+        requestId: '68216b78-477e-462d-b6d3-424f8062ffc6',
+        response: {
+            bankCode: '040',
+            accountId: '58002923112',
+            currencyCode: 'MNT',
+            enoughMonthCount: 10,
+            continuouslyMonthCount: 12,
+            monthlyIncomeAmount: 675000,
+            isEnoughIncomeAmount: 1,
+            isStableIncomeAmount: 0,
+            isDropAvgLastTwoMonths: 1,
+            isEnoughIncomeAmountForLastMonths: 1,
+        },
+        resultCode: 0,
+        resultMessage: 'амжилттай',
+    },
+    ИК94011123: {
+        request: {
+            regnum: 'ИК94011123',
+        },
+        requestId: '52d02b69-d85b-4278-9f00-516ecca540d6',
+        response: {
+            bankCode: '020',
+            accountId: '1106234567',
+            currencyCode: 'MNT',
+            enoughMonthCount: 7,
+            continuouslyMonthCount: 12,
+            monthlyIncomeAmount: 1450000,
+            isEnoughIncomeAmount: 1,
+            isStableIncomeAmount: 1,
+            isDropAvgLastTwoMonths: 1,
+            isEnoughIncomeAmountForLastMonths: 1,
+        },
+        resultCode: 0,
+        resultMessage: 'амжилттай',
+    },
+};

@@ -1,0 +1,1114 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: EMongolia Gateway service API documentation
+  description: |
+    __General API information__
+
+    ---
+
+    * All endpoints return either a JSON object or array.
+
+    __Error Codes and Messages__
+
+    ---
+
+     * If there is an error, the API will return __HTTP 200__ with an error code and a message of the reason.
+     * HTTP __5XX__ return codes are used for internal errors
+     * Error codes and messages
+        | Code    | Message                            |
+        | ------- | ---------------------------------- |
+        | 0       | __Success__                        |
+        | 400     | __Bad request__                    |
+        | 1001    | __Invalid parameter__              |
+        | 1002    | __Service not found__              |
+        | 1003    | __Required parameter missing__     |
+        | 1004    | __Request not found__              |
+        | 1005    | __State is not same__              |
+
+    __ENUM definitions__
+
+    ---
+
+    __*Request status:*__
+    * PENDING
+    * DONE
+    * ENTERED
+    * FAILED
+
+    __*Service status:*__
+    * ACTIVE
+    * INACTIVE
+
+  x-logo:
+    url: "https://tavanbogdfinance.com/_nuxt/img/logo-dark.b6ee3c3.png"
+    altText: TBFinance logo
+  contact:
+    name: Таван богд финанс - Team Backend
+servers:
+  - url: https://test-emongolia.payon.mn/api
+    description: Api endpoints
+  - url: https://test-emongolia.payon.mn
+    description: Public endpoints
+tags:
+  - name: eMongolia
+    x-displayName: Integrated endpoint to eMongolia
+    description: Integrated endpoints
+  - name: Services
+    x-displayName: CRUD endpoint
+    description: CRUD endpoint
+  - name: Public
+    x-displayName: Public
+    description: Public endpoint-ууд
+x-tagGroups:
+  - name: General
+    tags:
+      - eMongolia
+      - Services
+      - Public
+
+paths:
+  /e/uri:
+    post:
+      summary: Get eMongolia https uri
+      operationId: eMongolia_uri
+      tags:
+        - eMongolia
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Services list
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - services
+                - unique
+              type: object
+              example:
+                {
+                  "unique": "AA99008877",
+                  "callback": "127.0.0.1:8080",
+                  "services":
+                    [
+                      { "code": "CITIZEN_ID_CARD_INFO" },
+                      {
+                        "code": "SALARY_INCOME",
+                        "params": { "endYear": "2022", "startYear": "2022" },
+                      },
+                    ],
+                }
+              properties:
+                unique:
+                  type: string
+                  description: |
+                    Unique id of user.
+                    "user_id", "phoneNumber", "registerNumber" etc...
+                services:
+                  type: array
+                  description: Service list
+                  items:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: Unique code of service
+                        enum:
+                          - CITIZEN_ID_CARD_INFO
+                          - CITIZEN_BIRTH_INFO
+                          - CITIZEN_ADDRESS_INFO
+                          - CITIZEN_MARRIAGE_INFO
+                          - CITIZEN_MARRIAGE_DIVORCE_INFO
+                          - AUTHORIZE_CITIZEN
+                          - CITIZEN_INFO
+                          - CHECK_CITIZEN_REGNUM
+                          - CITIZEN_NO_MARRIEGE_INFO
+                          - PROPERTY_INFO
+                          - PROPERTY_LIST
+                          - LEGAL_ENTITY_INFO_WITH_REGNUM
+                          - VEHICLE_INFO_OLD
+                          - VEHICLE_OWNER_HISTORY_LIST
+                          - VEHICLE_PENALTY_LIST
+                          - CITIZEN_VEHICLE_LIST
+                          - DRIVER_LICENSE_INFO
+                          - SALARY_INCOME
+                          - CITIZEN_PENSION_INQUIRY
+                          - TAX_PAYER_INFO
+                          - VEHICLE_PAID_TAX_HISTORY
+                          - VEHICLE_TAX_PAYABLE_INFO
+                          - VEHICLE_INFO
+                      params:
+                        type: object
+                        description: Depends of service
+      responses:
+        "200":
+          description: eMongolia https uri
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/eMongoliaUri"
+                  - $ref: "#/components/schemas/Invalid Param Exception"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      callbacks:
+        notifyService:
+          "{HES uri}":
+            post:
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      example:
+                        {
+                          "unique": "99125116",
+                          "requestId": "125",
+                          "CITIZEN_ID_CARD_INFO":
+                            {
+                              "requestParams":
+                                {
+                                  "auth": null,
+                                  "civilId": null,
+                                  "regnum": "ЭЭ01010101",
+                                },
+                              "requestId": "ac7fded1-0cdd-4d6a-a4cb-07b83d56f971",
+                              "response":
+                                {
+                                  "addressApartmentName": "01",
+                                  "addressDetail": "01",
+                                  "addressRegionName": "1 хороолол",
+                                  "addressStreetName": "ногоон нуур",
+                                  "addressTownName": null,
+                                  "aimagCityCode": "11",
+                                  "aimagCityName": "Улаанбаатар",
+                                  "bagKhorooCode": "01",
+                                  "bagKhorooName": "01-р хороо",
+                                  "birthDate": null,
+                                  "birthDateAsText": "1997-02-02 00:00:00.0",
+                                  "birthPlace": "Төв,Зуунмод",
+                                  "civilId": "010101010101",
+                                  "firstname": "ФИРСТНЭЙМ",
+                                  "gender": "Эрэгтэй",
+                                  "image": "iVBORw0KGgoAAAANSUhEUgAAAdgAAALECAYAAACrJSHkAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAABcRgAAXEYBFJRDQQAACYII=",
+                                  "lastname": "Ластнэйм",
+                                  "nationality": "Халх",
+                                  "passportAddress": "УБ, Сүхбаатар, 01-р хороо@1 хороолол, ногоон нуур гудамж@01 байр, 01 тоот",
+                                  "passportExpireDate": "2042/02/02",
+                                  "passportIssueDate": "2022-03-04 00:00:00.0",
+                                  "personId": "2222222",
+                                  "regnum": "ээ01010101",
+                                  "soumDistrictCode": "19",
+                                  "soumDistrictName": "Сүхбаатар",
+                                  "surname": "Боржигон",
+                                },
+                              "errorCode": 0,
+                              "erorMessage": "SUCCESS",
+                            },
+                          "PROPERTY_LIST":
+                            {
+                              "requestParams":
+                                {
+                                  "auth": null,
+                                  "cabinNumber": null,
+                                  "certificatNumber": null,
+                                  "plateNumber": null,
+                                  "regnum": "ЭЭ01010101",
+                                },
+                              "requestId": "69101cfc-a00e-4b2b-bb40-e5ca5ef089a0",
+                              "response": null,
+                              "errorCode": 1,
+                              "erorMessage": "EMPTY",
+                            },
+                          "SALARY_INCOME":
+                            {
+                              "requestParams":
+                                {
+                                  "auth": null,
+                                  "endYear": 2022,
+                                  "regnum": "ЭЭ01010101",
+                                  "startYear": 2022,
+                                },
+                              "requestId": "3f773500-b3ab-46fd-9c87-73d03e389d72",
+                              "response":
+                                {
+                                  "list":
+                                    [
+                                      {
+                                        "domName": "Хан-Уул дүүрэг",
+                                        "month": 1,
+                                        "orgName": "ТЕСТ ХХК",
+                                        "orgSiID": "260021494",
+                                        "paid": true,
+                                        "salaryAmount": 2000000,
+                                        "salaryFee": 499999.48,
+                                        "year": 2022,
+                                      },
+                                      {
+                                        "domName": "Хан-Уул дүүрэг",
+                                        "month": 2,
+                                        "orgName": "ТЕСТ ХХК",
+                                        "orgSiID": "260021494",
+                                        "paid": true,
+                                        "salaryAmount": 2000000,
+                                        "salaryFee": 500000.56,
+                                        "year": 2022,
+                                      },
+                                    ],
+                                },
+                              "errorCode": 0,
+                              "erorMessage": "SUCCESS",
+                            },
+                        }
+
+  /e/check:
+    get:
+      summary: Get request detail
+      operationId: checkRequest
+      tags:
+        - eMongolia
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: requestId
+          schema:
+            type: number
+          required: true
+          description: Request id
+        - in: query
+          name: state
+          schema:
+            type: string
+          required: true
+          description: State
+      responses:
+        "200":
+          description: eMongolia https uri
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Request"
+                  - $ref: "#/components/schemas/Invalid Param Exception"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /s/service:
+    post:
+      summary: Create a new service
+      operationId: service
+      tags:
+        - Services
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Service object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                {
+                  "code": "WS100001_listAccess",
+                  "name": "Зөвшөөрөгдсөн веб сервис болон түүний гаралтын жагсаалтыг авах сервис",
+                  "wsdl": "https://xyp.gov.mn/meta-1.2.0/ws?WSDL",
+                  "params":
+                    [
+                      { "param": "param1", "desc": "test", "type": "string" },
+                      { "param": "param2", "desc": "test1", "type": "int" },
+                    ],
+                }
+              properties:
+                code:
+                  type: string
+                  description: Unique code of DAN services
+                name:
+                  type: string
+                  description: Name or description of service
+                wsdl:
+                  type: string
+                  description: WSDL of DAN services
+                params:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      param:
+                        type: string
+                        description: Parameter name
+                      desc:
+                        type: string
+                        description: Description of parameter
+                      type:
+                        type: string
+                        enum: [string, int, boolean]
+                        description: Type of parameter
+      responses:
+        "200":
+          description: New service details
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/New Service"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /s/services:
+    get:
+      summary: Get a service
+      operationId: service list
+      tags:
+        - Services
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [ACTIVE, INACTIVE]
+          required: false
+          description: Status
+      responses:
+        "200":
+          description: Service list
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Services"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /s/service/{code}:
+    get:
+      summary: Get a service
+      operationId: get a service
+      tags:
+        - Services
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: code
+          schema:
+            type: string
+            enum:
+              - CITIZEN_ID_CARD_INFO
+              - CITIZEN_BIRTH_INFO
+              - CITIZEN_ADDRESS_INFO
+              - CITIZEN_MARRIAGE_INFO
+              - CITIZEN_MARRIAGE_DIVORCE_INFO
+              - AUTHORIZE_CITIZEN
+              - CITIZEN_INFO
+              - CHECK_CITIZEN_REGNUM
+              - CITIZEN_NO_MARRIEGE_INFO
+              - PROPERTY_INFO
+              - PROPERTY_LIST
+              - LEGAL_ENTITY_INFO_WITH_REGNUM
+              - VEHICLE_INFO_OLD
+              - VEHICLE_OWNER_HISTORY_LIST
+              - VEHICLE_PENALTY_LIST
+              - CITIZEN_VEHICLE_LIST
+              - DRIVER_LICENSE_INFO
+              - SALARY_INCOME
+              - CITIZEN_PENSION_INQUIRY
+              - TAX_PAYER_INFO
+              - VEHICLE_PAID_TAX_HISTORY
+              - VEHICLE_TAX_PAYABLE_INFO
+              - VEHICLE_INFO
+          required: true
+          description: Code of service
+      responses:
+        "200":
+          description: Service object
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Service"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update a service
+      operationId: update a service
+      tags:
+        - Services
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: code
+          schema:
+            type: string
+          required: true
+          description: Code of service
+      responses:
+        "200":
+          description: Updated service object
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Updated Service"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a service
+      operationId: delete a service
+      tags:
+        - Services
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: code
+          schema:
+            type: string
+          required: true
+          description: Code of service
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Deleted Service"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /:
+    get:
+      summary: Home
+      operationId: Home page
+      tags:
+        - Public
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Home page"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /health:
+    get:
+      summary: Шалгах
+      operationId: Health check
+      tags:
+        - Public
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health Response"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /base-exception:
+    get:
+      summary: Base exception
+      operationId: Base exception
+      tags:
+        - Public
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Error"
+  /invalid-param-exception:
+    get:
+      summary: Invalid param exception
+      operationId: Invalid param exception
+      tags:
+        - Public
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Invalid Param Exception"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /exception:
+    get:
+      summary: Exception
+      operationId: Exception
+      tags:
+        - Public
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Exception"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      example: { code: 1000, response: "Unexpected error" }
+      type: object
+      properties:
+        code:
+          type: number
+          description: Error code
+        response:
+          type: string
+          description: Error Message
+    Exception:
+      example: { code: 1000, response: "Exception" }
+      type: object
+      properties:
+        code:
+          type: number
+          description: Error code
+        response:
+          type: string
+          description: Error Message
+    Unauthorized:
+      example: { code: 401, response: "Unauthorized" }
+      type: object
+      properties:
+        code:
+          type: number
+          description: Error code
+        response:
+          type: string
+          description: Error Message
+    Invalid Param Exception:
+      example: { code: 1000, response: "Invalid Param" }
+      type: object
+      properties:
+        code:
+          type: number
+          description: Error code
+        response:
+          type: string
+          description: Error Message
+    Health Response:
+      example: { code: 0, response: "Working" }
+      type: object
+      properties:
+        code:
+          type: number
+          description: Error code
+        response:
+          type: string
+          description: Response
+    Home page:
+      example: "<h2>Hello World!</h2>"
+      type: string
+      description: "Нүүр хуудас"
+    eMongoliaUri:
+      example:
+        {
+          "code": 0,
+          "response":
+            {
+              "uri": "http://localhost/api/e/redirect/126?state=8873e98070f5a3784e2bfe03e597a473b9458b01f58fc78f41523e4efca245f2",
+              "state": "8873e98070f5a3784e2bfe03e597a473b9458b01f58fc78f41523e4efca245f2",
+              "requestId": 126,
+            },
+        }
+      type: object
+      properties:
+        code:
+          type: number
+          description: |
+            Error code:
+            0 - success, others - error
+        response:
+          type: object
+          properties:
+            uri:
+              type: string
+              description: Redirect uri
+            state:
+              type: string
+              description: Unique id of system
+            requestId:
+              type: number
+              description: Request id
+    New Service:
+      example:
+        {
+          "code": 0,
+          "response":
+            {
+              "id": 74,
+              "code": "WS100001_listAccess",
+              "name": "Зөвшөөрөгдсөн веб сервис болон түүний гаралтын жагсаалтыг авах сервис",
+              "wsdl": "https://xyp.gov.mn/meta-1.2.0/ws?WSDL",
+              "status": 1,
+              "params":
+                [
+                  { "desc": "test", "type": "string", "param": "param1" },
+                  { "desc": "test1", "type": "int", "param": "param2" },
+                ],
+              "createdAt": "2022-08-01T08:19:07.599Z",
+            },
+        }
+      type: object
+      properties:
+        code:
+          type: number
+          description: |
+            Error code:
+            0 - success, others - error
+        response:
+          type: object
+          description: Service object
+          properties:
+            id:
+              type: number
+              description: Unique id
+            code:
+              type: string
+              description: Service unique code
+            name:
+              type: string
+              description: Service title or description
+            wsdl:
+              type: string
+              description: WSDL
+            params:
+              type: array
+              description: Service's parameter. Can be empty
+              items:
+                type: object
+                description:
+                properties:
+                  desc:
+                    type: string
+                    description: Description of parameter
+                  type:
+                    type: string
+                    description: Type of parameter
+                  param:
+                    type: string
+                    description: Parameter name
+            status:
+              type: number
+              description: Status
+              enum: [0 - active, 1 - inactive]
+            createdAt:
+              type: string
+              description: Created date
+    Services:
+      example:
+        {
+          "code": 0,
+          "response":
+            [
+              {
+                "id": 215,
+                "code": "CITIZEN_ID_CARD_INFO",
+                "key": "WS100101_getCitizenIDCardInfo",
+                "desc": "Иргэний үнэмлэхний мэдээлэл дамжуулах сервис",
+                "wsdl": "https://xyp.gov.mn/citizen-1.3.0/ws?WSDL",
+                "params": [],
+                "status": "ACTIVE",
+              },
+              {
+                "id": 216,
+                "code": "CITIZEN_BIRTH_INFO",
+                "key": "WS100102_getCitizenBirthInfo",
+                "desc": "Иргэний төрсний гэрчилгээний мэдээлэл дамжуулах сервис",
+                "wsdl": "https://xyp.gov.mn/citizen-1.3.0/ws?WSDL",
+                "params": [],
+                "status": "INACTIVE",
+              },
+            ],
+        }
+      type: object
+      properties:
+        code:
+          type: number
+          description: |
+            Error code:
+            0 - success, others - error
+        response:
+          type: array
+          description: Service list
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+                description: Unique id
+              code:
+                type: string
+                description: Service unique code
+              name:
+                type: string
+                description: Service title or description
+              wsdl:
+                type: string
+                description: WSDL
+              params:
+                type: array
+                description: Service's parameter. Can be empty
+                items:
+                  type: object
+                  description:
+                  properties:
+                    desc:
+                      type: string
+                      description: Description of parameter
+                    type:
+                      type: string
+                      description: Type of parameter
+                    param:
+                      type: string
+                      description: Parameter name
+              status:
+                type: number
+                description: Status
+                enum: [0 - active, 1 - inactive]
+    Service:
+      example:
+        {
+          "code": 0,
+          "response":
+            {
+              "id": 215,
+              "code": "CITIZEN_ID_CARD_INFO",
+              "key": "WS100101_getCitizenIDCardInfo",
+              "desc": "Иргэний үнэмлэхний мэдээлэл дамжуулах сервис",
+              "wsdl": "https://xyp.gov.mn/citizen-1.3.0/ws?WSDL",
+              "params": [],
+              "status": "ACTIVE",
+            },
+        }
+      type: object
+      properties:
+        code:
+          type: number
+          description: |
+            Error code:
+            0 - success, others - error
+        response:
+          type: object
+          description: Service object
+          properties:
+            id:
+              type: number
+              description: Unique id
+            code:
+              type: string
+              description: Service unique code
+            key:
+              type: string
+              description: Emongolia unique code
+            desc:
+              type: string
+              description: Service title or description
+            wsdl:
+              type: string
+              description: WSDL
+            params:
+              type: array
+              description: Service's parameter. Can be empty
+              items:
+                type: object
+                description:
+                properties:
+                  desc:
+                    type: string
+                    description: Description of parameter
+                  type:
+                    type: string
+                    description: Type of parameter
+                  param:
+                    type: string
+                    description: Parameter name
+            status:
+              type: number
+              description: Status
+              enum: [0 - active, 1 - inactive]
+    Updated Service:
+      example:
+        {
+          "code": 0,
+          "response":
+            {
+              "id": 74,
+              "code": "CITIZEN_ID_CARD_INFO",
+              "key": "WS100101_getCitizenIDCardInfo",
+              "desc": "Иргэний үнэмлэхний мэдээлэл дамжуулах сервис",
+              "wsdl": "https://xyp.gov.mn/meta-1.2.0/ws?WSDL",
+              "status": 0,
+              "params":
+                [
+                  { "desc": "test", "type": "string", "param": "param1" },
+                  { "desc": "test1", "type": "int", "param": "param2" },
+                ],
+              "createdAt": "2022-08-01T08:19:07.599Z",
+            },
+        }
+      type: object
+      properties:
+        code:
+          type: number
+          description: |
+            Error code:
+            0 - success, others - error
+        response:
+          type: object
+          description: Service object
+          properties:
+            id:
+              type: number
+              description: Unique id
+            code:
+              type: string
+              description: Service unique code
+            key:
+              type: string
+              description: Emongolia unique code
+            desc:
+              type: string
+              description: Service title or description
+            wsdl:
+              type: string
+              description: WSDL
+            params:
+              type: array
+              description: Service's parameter. Can be empty
+              items:
+                type: object
+                description:
+                properties:
+                  desc:
+                    type: string
+                    description: Description of parameter
+                  type:
+                    type: string
+                    description: Type of parameter
+                  param:
+                    type: string
+                    description: Parameter name
+            status:
+              type: number
+              description: Status
+              enum: [0 - active, 1 - inactive]
+            createdAt:
+              type: string
+              description: Created date
+    Deleted Service:
+      example:
+        {
+          "code": 0,
+          "response":
+            {
+              "id": 74,
+              "code": "CITIZEN_ID_CARD_INFO",
+              "key": "WS100101_getCitizenIDCardInfo",
+              "desc": "Иргэний үнэмлэхний мэдээлэл дамжуулах сервис",
+              "wsdl": "https://xyp.gov.mn/meta-1.2.0/ws?WSDL",
+              "status": 1,
+              "params":
+                [
+                  { "desc": "test", "type": "string", "param": "param1" },
+                  { "desc": "test1", "type": "int", "param": "param2" },
+                ],
+              "createdAt": "2022-08-01T08:19:07.599Z",
+            },
+        }
+      type: object
+      properties:
+        code:
+          type: number
+          description: |
+            Error code:
+            0 - success, others - error
+        response:
+          type: object
+          description: Service object
+          properties:
+            id:
+              type: number
+              description: Unique id
+            code:
+              type: string
+              description: Service unique code
+            key:
+              type: string
+              description: Emongolia unique code
+            desc:
+              type: string
+              description: Service title or description
+            wsdl:
+              type: string
+              description: WSDL
+            params:
+              type: array
+              description: Service's parameter. Can be empty
+              items:
+                type: object
+                description:
+                properties:
+                  desc:
+                    type: string
+                    description: Description of parameter
+                  type:
+                    type: string
+                    description: Type of parameter
+                  param:
+                    type: string
+                    description: Parameter name
+            status:
+              type: number
+              description: Status
+              enum: [0 - active, 1 - inactive]
+            createdAt:
+              type: string
+              description: Created date
+    Request:
+      example:
+        {
+          "code": 0,
+          "response":
+            {
+              "id": 125,
+              "unique": "99111009",
+              "status": 1,
+              "services": ["WS100202_getPropertyList"],
+              "response": "",
+            },
+        }
+      type: object
+      properties:
+        code:
+          type: number
+          description: |
+            Error code:
+            0 - success, others - error
+        response:
+          type: object
+          description: Request
+          properties:
+            id:
+              type: number
+              description: Request id
+            unique:
+              type: string
+              description: |
+                Unique id of user.
+                "user_id", "phoneNumber", "registerNumber" etc...
+            state:
+              type: string
+              description: Unique id of system
+            services:
+              type: array
+              description: Services list
+            response:
+              type: object
+              description: Can be empty when file log not found

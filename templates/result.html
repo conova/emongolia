@@ -81,15 +81,11 @@
             const errorMessage = searchParams.get('errorMessage');
             document.getElementById('result').innerText = result === 'success' ? 'Амжилттай' : 'Алдаа гарлаа!';
 
-            window.ReactNativeWebView.postMessage(
-                JSON.stringify({
-                    type: 'click',
-                    response: {
-                        result,
-                        errorMessage
-                    },
-                })
-            );
+            window.MandalApp.postMessage(JSON.stringify({
+                action: 'navigate_home',
+                result: result,
+                message: errorMessage
+            }));
         </script>
     </body>
 </html>

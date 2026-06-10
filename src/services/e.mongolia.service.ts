@@ -199,12 +199,13 @@ export default class eMongolia extends BaseService {
         if (!token) return { success: false, code: -1 };
 
         const result = await this.serviceCall(token);
-        if (!result) return { success: false, code: -1 };
+        if (!result) return { success: false, code: -2 };
 
         const requestParams = await this.prepareRequestParams(result, request.unique, request.id);
-        if (!requestParams) return { success: false, code: -1 };
+        if (!requestParams) return { success: false, code: -3 };
 
-        this.logToFile(request.state, requestParams);
+        logger.info(requestParams);
+	this.logToFile(request.state, requestParams);
         const isNotified = await this.hesNotifService.notif(requestParams, request.callback);
 
         let status = <string>STATUS_REQUEST.FAILED;

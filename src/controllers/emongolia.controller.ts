@@ -123,7 +123,8 @@ export default class eMongoliaController {
             res.redirect('/result?result=success');
             return;
         } catch (error) {
-            logger.error(`authorize: ${code} : ${state} : ${error instanceof Error ? error.message : <string>error}`);
+            logger.error(error);
+    	    logger.error(`authorize: ${code} : ${state} : ${error instanceof Error ? error.message : <string>error}`);
             res.redirect('/result?result=failed&errorMessage=Алдаа гарлаа');
             return;
         }

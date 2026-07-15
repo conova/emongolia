@@ -81,11 +81,26 @@
             const errorMessage = searchParams.get('errorMessage');
             document.getElementById('result').innerText = result === 'success' ? 'Амжилттай' : 'Алдаа гарлаа!';
 
-            window.MandalApp.postMessage(JSON.stringify({
+            const payload = {
                 action: 'navigate_home',
                 result: result,
                 message: errorMessage
-            }));
+            };
+
+            if (window.MandalApp) {
+                // Mandal app webview
+                window.MandalApp.postMessage(JSON.stringify(payload));
+            } else {
+                // regular browser: send the opener tab to the result screen, then close this one
+                const target = '/main?' + (result === 'success' ? 'success' : 'fail');
+                if (window.opener && !window.opener.closed) {
+                    window.opener.location.href = target;
+                    window.close();
+                } else {
+                    // tab was not opened by script, so it cannot be closed — navigate it instead
+                    window.location.href = target;
+                }
+            }
         </script>
     </body>
 </html>

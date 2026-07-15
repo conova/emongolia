@@ -23,36 +23,10 @@ export default class HESNotifService {
                 };
             }
 
-            const response = await client.request(Client.METHOD_POST, '', {
+            await client.request(Client.METHOD_POST, '', {
                 body: params,
                 headers,
             });
-
-            if (JSON.stringify(response).includes('Regnum is not matched')) {
-                return {
-                    success: false,
-                    code: 1008,
-                };
-            }
-
-            if (JSON.stringify(response).includes('Customer with this regnum already exists')) {
-                return {
-                    success: false,
-                    code: 1010,
-                };
-            }
-
-            if (
-                response.some(
-                    (item: any) =>
-                        item.serviceDataType === 'CITIZEN_ID_CARD_INFO' && item.message === 'Response is empty'
-                )
-            ) {
-                return {
-                    success: false,
-                    code: 1010,
-                };
-            }
 
             return {
                 success: true,

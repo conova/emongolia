@@ -73,12 +73,6 @@ export default class Client {
 
         if (rawResponse.status !== httpStatus.OK) {
             throw new BaseException(JSON.stringify(res), 1000);
-        } else {
-            if (Array.isArray(res)) {
-                if (typeof res[0] === 'object' && res[0]['message']) {
-                    if (res[0]['message'] == 'Regnum is not matched') throw new BaseException(res[0]['message'], 1008);
-                }
-            }
         }
 
         return res;

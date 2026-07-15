@@ -81,8 +81,10 @@
             const errorMessage = searchParams.get('errorMessage');
             document.getElementById('result').innerText = result === 'success' ? 'Амжилттай' : 'Алдаа гарлаа!';
 
+            const target = '/main?' + (result === 'success' ? 'success' : 'fail');
             const payload = {
-                action: 'navigate_home',
+                action: 'navigate_main',
+                target: target,
                 result: result,
                 message: errorMessage
             };
@@ -90,16 +92,23 @@
             if (window.MandalApp) {
                 // Mandal app webview
                 window.MandalApp.postMessage(JSON.stringify(payload));
-            } else {
-                // regular browser: send the opener tab to the result screen, then close this one
-                const target = '/main?' + (result === 'success' ? 'success' : 'fail');
-                if (window.opener && !window.opener.closed) {
+            } else if (window.opener && !window.opener.closed) {
+                // regular browser: send the opener tab to /main?success, then close this one
+                try {
+                    // reading the opener's URL throws for a cross-origin opener;
+                    // same-origin opener: navigate it directly
+                    void window.opener.location.href;
                     window.opener.location.href = target;
-                    window.close();
-                } else {
-                    // tab was not opened by script, so it cannot be closed — navigate it instead
-                    window.location.href = target;
+                } catch (e) {
+                    // cross-origin opener (another system, e.g. mandal.app): it cannot be
+                    // navigated to a path on its own domain from here, so it must listen
+                    // for this message and navigate itself
+                    window.opener.postMessage(payload, '*');
                 }
+                window.close();
+            } else {
+                // tab was not opened by script, so it cannot be closed — navigate it instead
+                window.location.href = target;
             }
         </script>
     </body>

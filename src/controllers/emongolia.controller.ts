@@ -106,26 +106,26 @@ export default class eMongoliaController {
                 logger.error(`authorize: ${code} : ${state} : ${this.eService.error}`);
                 if (result.code === 1008) {
                     res.redirect(
-                        '/result?result=mismatch_reg&errorMessage=Харилцагчийн Регистрийн дугаар таарахгүй байна.'
+                        '/dan/result?result=mismatch_reg&errorMessage=Харилцагчийн Регистрийн дугаар таарахгүй байна.'
                     );
                     return;
                 }
                 if (result.code === 1010) {
                     res.redirect(
-                        '/result?result=already_registered_reg&errorMessage=Регистрийн дугаар бүртгэлтэй байна.'
+                        '/dan/result?result=already_registered_reg&errorMessage=Регистрийн дугаар бүртгэлтэй байна.'
                     );
                     return;
                 }
-                res.redirect('/result?result=failed&errorMessage=Алдаа гарлаа');
+                res.redirect('/dan/result?result=failed&errorMessage=Алдаа гарлаа');
                 return;
             }
 
-            res.redirect('/result?result=success');
+            res.redirect('/dan/result?result=success');
             return;
         } catch (error) {
             logger.error(error);
-    	    logger.error(`authorize: ${code} : ${state} : ${error instanceof Error ? error.message : <string>error}`);
-            res.redirect('/result?result=failed&errorMessage=Алдаа гарлаа');
+            logger.error(`authorize: ${code} : ${state} : ${error instanceof Error ? error.message : <string>error}`);
+            res.redirect('/dan/result?result=failed&errorMessage=Алдаа гарлаа');
             return;
         }
     });

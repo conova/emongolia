@@ -36,16 +36,16 @@ export default class PaymentController {
         try {
             const notified = await this.paymentService.checkPayment(<string>tranid, <string>checkid);
 
-            if (notified.success) return res.redirect('/result?result=success');
+            if (notified.success) return res.redirect('/dan/result?result=success');
 
             return res.redirect(
-                '/result?result=fail&errorMessage=' +
+                '/dan/result?result=fail&errorMessage=' +
                     encodeURIComponent('Payment notification failed (' + notified.code + ')')
             );
         } catch (error) {
             const message = error instanceof Error ? error.message : <string>error;
 
-            return res.redirect('/result?result=fail&errorMessage=' + encodeURIComponent(message));
+            return res.redirect('/dan/result?result=fail&errorMessage=' + encodeURIComponent(message));
         }
     });
 }

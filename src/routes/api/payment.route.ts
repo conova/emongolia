@@ -20,7 +20,7 @@ export default class PaymentRoute {
             .route('/link')
             .post(validate(paymentValidation.createLink), this._controller.createLink);
         this._router
-            .route('/check/:id')
+            .route('/check')
             .get(validate(paymentValidation.checkPayment), this._controller.checkPayment);
 
         return this._router;

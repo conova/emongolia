@@ -31,15 +31,8 @@ export default class PaymentService {
         const ordernum = String(payment.id);
 
         try {
-            const returnurl = config.negdi_return_url + payment.id;
             const ordertype = action === PAYMENT_ACTION.QR ? 'QPAY' : '3dsOrder';
-            const result = await this.negdiService.createOrder(
-                amount,
-                ordernum,
-                `${txntype}:${custid}`,
-                returnurl,
-                ordertype
-            );
+            const result = await this.negdiService.createOrder(amount, ordernum, `${txntype}:${custid}`, ordertype);
 
             if (!result || !result.order || !result.order.negdiurl)
                 throw new BaseException('NEGDI order response is invalid', 2001);
@@ -70,8 +63,8 @@ export default class PaymentService {
         }
     };
 
-    public checkPayment = async (id: number) => {
-        const payment = await this.db.payment.findUnique({ where: { id } });
+    public checkPayment = async (tranid: string, checkid: string) => {
+        const payment = await this.db.payment.findFirst({ where: { tranid, checkid } });
         if (!payment) throw new BaseException('Payment not found', 2002);
 
         if (!config.hes_payment_uri) throw new BaseException('HES payment uri is not configured', 2003);

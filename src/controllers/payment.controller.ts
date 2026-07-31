@@ -31,10 +31,10 @@ export default class PaymentController {
     });
 
     checkPayment = catchAsync(async (req: Request, res: Response) => {
-        const { id } = pick(req.params, ['id']);
+        const { tranid, checkid } = pick(req.query, ['tranid', 'checkid']);
 
         try {
-            const notified = await this.paymentService.checkPayment(Number(id));
+            const notified = await this.paymentService.checkPayment(<string>tranid, <string>checkid);
 
             if (notified.success) return res.redirect('/result?result=success');
 

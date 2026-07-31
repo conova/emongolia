@@ -1,7 +1,6 @@
 import Joi from 'joi';
 
 import { PAYMENT_ACTION, TXN_TYPE } from '@prisma/client';
-import { isNumber } from './custom.validation';
 
 const createLink = {
     body: Joi.object().keys({
@@ -17,8 +16,9 @@ const createLink = {
 };
 
 const checkPayment = {
-    params: Joi.object().keys({
-        id: Joi.number().custom(isNumber).required(),
+    query: Joi.object().keys({
+        tranid: Joi.string().required(),
+        checkid: Joi.string().required(),
     }),
 };
 

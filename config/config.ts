@@ -34,7 +34,7 @@ const envVarsSchema = Joi.object()
         NEGDI_PASSWORD: Joi.string().default('TESTTERMINAL10'),
         NEGDI_RETURN_URL: Joi.string().default('http://localhost:8001'),
 
-        HES_PAYMENT_URI: Joi.string().default(''),
+        HES_PAYMENT_URI: Joi.string().default('https://bds.techfi.mn/bdc/api/kyc/payment_status'),
     })
     .unknown();
 

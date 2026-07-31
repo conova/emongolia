@@ -32,7 +32,14 @@ export default class PaymentService {
 
         try {
             const returnurl = config.negdi_return_url + payment.id;
-            const result = await this.negdiService.createOrder(amount, ordernum, `${txntype}:${custid}`, returnurl);
+            const ordertype = action === PAYMENT_ACTION.QR ? 'QPAY' : '3dsOrder';
+            const result = await this.negdiService.createOrder(
+                amount,
+                ordernum,
+                `${txntype}:${custid}`,
+                returnurl,
+                ordertype
+            );
 
             if (!result || !result.order || !result.order.negdiurl)
                 throw new BaseException('NEGDI order response is invalid', 2001);

@@ -78,10 +78,11 @@
         <script type="text/javascript" nonce="i2726c7f26b">
             const searchParams = new URLSearchParams(window.location.search);
             const result = searchParams.get('result');
+            const action = searchParams.get('action');
             const errorMessage = searchParams.get('errorMessage');
             document.getElementById('result').innerText = result === 'success' ? 'Амжилттай' : 'Алдаа гарлаа!';
 
-            const target = '/main?' + (result === 'success' ? 'success' : 'fail');
+            const target = (action ?? '/main?') + (result === 'success' ? 'success' : 'fail');
             const payload = {
                 action: 'navigate_main',
                 target: target,

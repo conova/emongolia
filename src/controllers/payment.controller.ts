@@ -36,7 +36,7 @@ export default class PaymentController {
         try {
             const notified = await this.paymentService.checkPayment(<string>tranid, <string>checkid);
 
-            if (notified.success) return res.redirect('/dan/result?result=success');
+            if (notified.success) return res.redirect('/dan/result?result=success&action=register_success');
 
             return res.redirect(
                 '/dan/result?result=fail&errorMessage=' +

@@ -31,7 +31,8 @@ export default class PaymentService {
         const ordernum = String(payment.id);
 
         try {
-            const result = await this.negdiService.createOrder(amount, ordernum, `${txntype}:${custid}`);
+            const returnurl = config.negdi_return_url + payment.id;
+            const result = await this.negdiService.createOrder(amount, ordernum, `${txntype}:${custid}`, returnurl);
 
             if (!result || !result.order || !result.order.negdiurl)
                 throw new BaseException('NEGDI order response is invalid', 2001);
@@ -62,8 +63,8 @@ export default class PaymentService {
         }
     };
 
-    public checkPayment = async (checkid: string) => {
-        const payment = await this.db.payment.findFirst({ where: { checkid } });
+    public checkPayment = async (id: number) => {
+        const payment = await this.db.payment.findUnique({ where: { id } });
         if (!payment) throw new BaseException('Payment not found', 2002);
 
         if (!config.hes_payment_uri) throw new BaseException('HES payment uri is not configured', 2003);

@@ -9,20 +9,18 @@ import * as paymentValidation from '../../validations/payment.validation';
 @injectable()
 export default class PaymentRoute {
     private readonly _controller: PaymentController;
-    private readonly _authentication: Authentication;
     private _router = express.Router();
 
     constructor(paymentController: PaymentController, authentication: Authentication) {
         this._controller = paymentController;
-        this._authentication = authentication;
     }
 
     public get router() {
         this._router
             .route('/link')
-            .post(this._authentication.verify(), validate(paymentValidation.createLink), this._controller.createLink);
+            .post(validate(paymentValidation.createLink), this._controller.createLink);
         this._router
-            .route('/check/:checkid')
+            .route('/check/:id')
             .get(validate(paymentValidation.checkPayment), this._controller.checkPayment);
 
         return this._router;

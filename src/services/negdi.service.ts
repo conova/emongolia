@@ -19,7 +19,7 @@ export interface INegdiOrderResponse {
 export default class NegdiService {
     private readonly _path = '/api/pay/ec1000';
 
-    public createOrder = async (amount: number, ordernum: string, description: string) => {
+    public createOrder = async (amount: number, ordernum: string, description: string, returnurl: string) => {
         const client = new Client(config.negdi_uri);
 
         const response = <INegdiOrderResponse>await client.request(Client.METHOD_POST, this._path, {
@@ -28,7 +28,7 @@ export default class NegdiService {
                 terminalid: config.negdi_terminal_id,
                 username: config.negdi_username,
                 password: config.negdi_password,
-                returnurl: config.negdi_return_url,
+                returnurl,
                 amount,
                 currency: 'MNT',
                 ordernum,

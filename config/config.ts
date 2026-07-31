@@ -27,6 +27,14 @@ const envVarsSchema = Joi.object()
 
         APM_SECRET_TOKEN: Joi.string().required(),
         ELASTIC_URL: Joi.string().required(),
+
+        NEGDI_URI: Joi.string().default('http://103.229.177.10:8032'),
+        NEGDI_TERMINAL_ID: Joi.string().default('222'),
+        NEGDI_USERNAME: Joi.string().default('TESTTERMINAL10'),
+        NEGDI_PASSWORD: Joi.string().default('TESTTERMINAL10'),
+        NEGDI_RETURN_URL: Joi.string().default('http://localhost:8001'),
+
+        HES_PAYMENT_URI: Joi.string().default(''),
     })
     .unknown();
 
@@ -52,4 +60,12 @@ export default {
 
     apm_secret_token: envVars.APM_SECRET_TOKEN,
     elastic_url: envVars.ELASTIC_URL,
+
+    negdi_uri: envVars.NEGDI_URI,
+    negdi_terminal_id: envVars.NEGDI_TERMINAL_ID,
+    negdi_username: envVars.NEGDI_USERNAME,
+    negdi_password: envVars.NEGDI_PASSWORD,
+    negdi_return_url: envVars.NEGDI_RETURN_URL,
+
+    hes_payment_uri: envVars.HES_PAYMENT_URI,
 };

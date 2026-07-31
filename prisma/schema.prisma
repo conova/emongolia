@@ -31,6 +31,32 @@ model services {
   createdAt DateTime        @default(now())
 }
 
+model payment {
+  id        Int            @id @default(autoincrement())
+  custid    String         @db.VarChar(255)
+  amount    Decimal        @db.Decimal(20, 2)
+  txntype   TXN_TYPE
+  action    PAYMENT_ACTION
+  ordernum  String?        @db.VarChar(255)
+  tranid    String?        @db.VarChar(255)
+  checkid   String?        @db.VarChar(255)
+  status    String?        @db.VarChar(100) /// NEGDI order status
+  negdiurl  String?        @db.VarChar(500)
+  ordersign String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime?      @updatedAt()
+}
+
+enum TXN_TYPE {
+  FEE
+  CHARGE
+}
+
+enum PAYMENT_ACTION {
+  QR
+  CARD
+}
+
 enum STATUS_REQUEST {
   PENDING
   DONE

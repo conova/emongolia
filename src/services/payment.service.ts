@@ -71,7 +71,7 @@ export default class PaymentService {
 
         const txntype = payment.txntype.charAt(0) + payment.txntype.slice(1).toLowerCase();
         const params = {
-            custId: payment.custid,
+            uid: payment.custid,
             date: payment.createdAt.toISOString().replace(/\.\d{3}Z$/, 'Z'),
             amount: Number(payment.amount),
             description: `${txntype} ${payment.custid}`,

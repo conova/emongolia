@@ -69,13 +69,14 @@ export default class PaymentService {
 
         if (!config.hes_payment_uri) throw new BaseException('HES payment uri is not configured', 2003);
 
-        const txntype = payment.txntype.charAt(0) + payment.txntype.slice(1).toLowerCase();
+        const hesType = payment.txntype === TXN_TYPE.CHARGE ? 'DEPOSIT' : <string>payment.txntype;
+        const label = hesType.charAt(0) + hesType.slice(1).toLowerCase();
         const params = {
             uid: payment.custid,
             date: payment.createdAt.toISOString().replace(/\.\d{3}Z$/, 'Z'),
             amount: Number(payment.amount),
-            description: `${txntype} ${payment.custid}`,
-            type: payment.txntype,
+            description: `${label} ${payment.custid}`,
+            type: hesType,
             transaction: payment.tranid,
         };
 

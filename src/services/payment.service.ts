@@ -23,16 +23,28 @@ export default class PaymentService {
         this.db = prisma;
     }
 
-    public createPaymentLink = async (custid: string, amount: number, txntype: TXN_TYPE, action: PAYMENT_ACTION) => {
+    public createPaymentLink = async (
+        custid: string,
+        amount: number,
+        currency: string,
+        txntype: TXN_TYPE,
+        action: PAYMENT_ACTION
+    ) => {
         const payment = await this.db.payment.create({
-            data: { custid, amount, txntype, action },
+            data: { custid, amount, currency, txntype, action },
         });
 
         const ordernum = String(payment.id);
 
         try {
             const ordertype = action === PAYMENT_ACTION.QR ? 'QPAY' : '3dsOrder';
-            const result = await this.negdiService.createOrder(amount, ordernum, `${txntype}:${custid}`, ordertype);
+            const result = await this.negdiService.createOrder(
+                amount,
+                currency,
+                ordernum,
+                `${txntype}:${custid}`,
+                ordertype
+            );
 
             if (!result || !result.order || !result.order.negdiurl)
                 throw new BaseException('NEGDI order response is invalid', 2001);
@@ -75,6 +87,8 @@ export default class PaymentService {
             uid: payment.custid,
             date: payment.createdAt.toISOString().replace(/\.\d{3}Z$/, 'Z'),
             amount: Number(payment.amount),
+            curCode: payment.currency,
+            terminalId: config.negdi_terminal_id,
             description: `${label} ${payment.custid}`,
             type: hesType,
             transaction: payment.tranid,

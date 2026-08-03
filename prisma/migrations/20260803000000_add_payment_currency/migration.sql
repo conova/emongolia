@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "payment" ADD COLUMN "currency" VARCHAR(10) NOT NULL DEFAULT E'MNT';

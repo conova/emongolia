@@ -6,6 +6,7 @@ const createLink = {
     body: Joi.object().keys({
         custid: Joi.string().required(),
         amount: Joi.number().positive().required(),
+        currency: Joi.string().default('MNT'),
         txntype: Joi.string()
             .valid(...Object.values(TXN_TYPE))
             .required(),

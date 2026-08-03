@@ -18,11 +18,18 @@ export default class PaymentController {
     }
 
     createLink = catchAsync(async (req: Request, res: Response) => {
-        const { custid, amount, txntype, action } = pick(req.body, ['custid', 'amount', 'txntype', 'action']);
+        const { custid, amount, currency, txntype, action } = pick(req.body, [
+            'custid',
+            'amount',
+            'currency',
+            'txntype',
+            'action',
+        ]);
 
         const result = await this.paymentService.createPaymentLink(
             <string>custid,
             <number>amount,
+            <string>currency,
             <TXN_TYPE>txntype,
             <PAYMENT_ACTION>action
         );

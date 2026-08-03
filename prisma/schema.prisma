@@ -35,6 +35,7 @@ model payment {
   id        Int            @id @default(autoincrement())
   custid    String         @db.VarChar(255)
   amount    Decimal        @db.Decimal(20, 2)
+  currency  String         @default("MNT") @db.VarChar(10)
   txntype   TXN_TYPE
   action    PAYMENT_ACTION
   ordernum  String?        @db.VarChar(255)

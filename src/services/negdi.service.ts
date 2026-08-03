@@ -36,7 +36,7 @@ export default class NegdiService {
                 password: config.negdi_password,
                 returnurl: config.negdi_return_url,
                 amount,
-                currency,
+                currency: 'MNT',
                 ordernum,
                 description,
             },

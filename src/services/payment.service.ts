@@ -42,7 +42,7 @@ export default class PaymentService {
                 amount,
                 currency,
                 ordernum,
-                `${txntype}:${custid}`,
+                `${txntype}: ${custid}`,
                 ordertype
             );
 

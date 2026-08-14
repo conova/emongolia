@@ -56,4 +56,28 @@ export default class Authentication {
 
         return next();
     };
+
+    verifyIp = () => (req: Request, res: Response, next: NextFunction) => {
+        // no allowlist configured: restriction is disabled
+        if (config.allowed_ips.length === 0) return next();
+
+        const forwarded = <string>req.headers['x-forwarded-for'];
+        const ip = (forwarded ? forwarded.split(',')[0] : req.socket.remoteAddress ?? '')
+            .trim()
+            .replace(/^::ffff:/, '');
+
+        if (!config.allowed_ips.includes(ip)) return next(new BaseException('Forbidden', httpStatus.FORBIDDEN));
+
+        return next();
+    };
+
+    verifyApiKey = () => (req: Request, res: Response, next: NextFunction) => {
+        const apiKey = req.headers['x-api-key'];
+
+        // an empty configured key must never match — it would leave the endpoint open
+        if (!config.x_api_key || apiKey !== config.x_api_key)
+            return next(new BaseException('Invalid api key', httpStatus.UNAUTHORIZED));
+
+        return next();
+    };
 }

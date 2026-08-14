@@ -10,6 +10,7 @@ import EMongoliaRoute from './api/emongolia.route';
 import AuthorizeRoute from './api/authorize.route';
 import ServiceRoute from './api/service.route';
 import PaymentRoute from './api/payment.route';
+import GolomtRoute from './api/golomt.route';
 import publicRoute from '../routes/public/public.route';
 import docsRoute from '../../docs/docs.route';
 
@@ -29,6 +30,10 @@ const defaultRoutes = [
     {
         path: '/api/payment',
         route: container.resolve(PaymentRoute).router,
+    },
+    {
+        path: '/api/golomt',
+        route: container.resolve(GolomtRoute).router,
     },
     {
         path: '/',

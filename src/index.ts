@@ -1,9 +1,13 @@
 import app from './app';
 import config from '../config/config';
 import logger from '../config/logger';
+import { startStatementJob } from './jobs/statement.job';
+import { startRegisterJob } from './jobs/register.job';
 
 const server = app.listen(config.port, () => {
     logger.info(`Listening to port ${config.port}`);
+    startStatementJob();
+    startRegisterJob();
 });
 
 const exitHandler = () => {

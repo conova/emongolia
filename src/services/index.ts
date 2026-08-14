@@ -2,5 +2,7 @@ import eService from './e.mongolia.service';
 import WsdlService from './wsdl.service';
 import NegdiService from './negdi.service';
 import PaymentService from './payment.service';
+import GolomtClient from './golomt.client';
+import GolomtService from './golomt.service';
 
-export { eService as eMongoliaService, WsdlService, NegdiService, PaymentService };
+export { eService as eMongoliaService, WsdlService, NegdiService, PaymentService, GolomtClient, GolomtService };

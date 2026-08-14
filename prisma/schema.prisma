@@ -48,6 +48,84 @@ model payment {
   updatedAt DateTime?      @updatedAt()
 }
 
+model withdraw {
+  id             Int             @id @default(autoincrement())
+  custid         String?         @db.VarChar(255)
+  acctType       String?         @db.VarChar(50) /// initiator bank_account type
+  registerNumber String?         @db.VarChar(50)
+  acctName       String          @db.VarChar(255)
+  acctNo         String          @db.VarChar(100)
+  bank           String          @db.VarChar(10)
+  amount         Decimal         @db.Decimal(20, 2)
+  currency       String          @default("MNT") @db.VarChar(10)
+  description    String?         @db.VarChar(255)
+  clientId       String?         @db.VarChar(255)
+  state          String?         @db.VarChar(255)
+  scope          String?         @db.VarChar(255)
+  transferRes    Json?
+  confirmRes     Json?
+  error          String?
+  status         STATUS_WITHDRAW @default(PENDING)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime?       @updatedAt()
+}
+
+model bank_transaction {
+  id          Int                @id @default(autoincrement())
+  accountId   String             @db.VarChar(100)
+  hash        String             @unique @db.VarChar(64)
+  refno       String?            @db.VarChar(100)
+  trandate    String?            @db.VarChar(50)
+  amount      Decimal?           @db.Decimal(20, 2)
+  drOrCr      String?            @db.VarChar(10)
+  relatedAccount String?         @db.VarChar(100) /// counterparty account number
+  description String?
+  record      Json
+  status      STATUS_TRANSACTION @default(PENDING) /// core system registration
+  createdAt   DateTime           @default(now())
+}
+
+enum STATUS_TRANSACTION {
+  PENDING
+  REGISTERED
+}
+
+model job_run {
+  id         Int        @id @default(autoincrement())
+  name       String     @db.VarChar(100)
+  status     STATUS_JOB @default(RUNNING)
+  result     Json?
+  error      String?
+  startedAt  DateTime   @default(now())
+  finishedAt DateTime?
+}
+
+model bank_account {
+  id        Int       @id @default(autoincrement())
+  type      String    @unique @db.VarChar(50)
+  bank      String    @db.VarChar(10)
+  account   String    @db.VarChar(100)
+  name      String    @db.VarChar(255)
+  currency  String    @default("MNT") @db.VarChar(10)
+  statement Boolean   @default(false) /// fetch statement for this account
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt()
+}
+
+enum STATUS_JOB {
+  RUNNING
+  DONE
+  FAILED
+}
+
+enum STATUS_WITHDRAW {
+  PENDING
+  TRANSFERRED
+  TRANSFER_FAILED
+  CONFIRMED
+  CONFIRM_FAILED
+}
+
 enum TXN_TYPE {
   FEE
   CHARGE

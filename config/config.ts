@@ -35,6 +35,23 @@ const envVarsSchema = Joi.object()
         NEGDI_RETURN_URL: Joi.string().default('http://localhost:8001'),
 
         HES_PAYMENT_URI: Joi.string().default('https://bds.techfi.mn/bdc/api/kyc/payment_status'),
+        HES_TRANSACTION_URI: Joi.string().allow('').default(''),
+
+        X_API_KEY: Joi.string().allow('').default(''),
+        ALLOWED_IPS: Joi.string().allow('').default(''),
+
+        GOLOMT_URL: Joi.string().allow('').default(''),
+        GOLOMT_NAME: Joi.string().default('gmtbankapi'),
+        GOLOMT_PASSWORD: Joi.string().allow('').default(''),
+        GOLOMT_SESSION_KEY: Joi.string().allow('').default(''),
+        GOLOMT_IV_KEY: Joi.string().allow('').default(''),
+        GOLOMT_ACCESS_CODE: Joi.string().allow('').default(''),
+        GOLOMT_CLIENT_ID: Joi.string().allow('').default(''),
+        GOLOMT_SCOPE: Joi.string().allow('').default(''),
+        GOLOMT_REGISTER_NO: Joi.string().allow('').default(''),
+        GOLOMT_ACCT_NO: Joi.string().allow('').default(''),
+        GOLOMT_ACCT_NAME: Joi.string().allow('').default(''),
+        GOLOMT_BANK_CODE: Joi.string().default('15'),
     })
     .unknown();
 
@@ -68,4 +85,24 @@ export default {
     negdi_return_url: envVars.NEGDI_RETURN_URL,
 
     hes_payment_uri: envVars.HES_PAYMENT_URI,
+    hes_transaction_uri: envVars.HES_TRANSACTION_URI,
+
+    x_api_key: envVars.X_API_KEY,
+    allowed_ips: (<string>envVars.ALLOWED_IPS)
+        .split(',')
+        .map((ip: string) => ip.trim())
+        .filter((ip: string) => ip.length > 0),
+
+    golomt_url: envVars.GOLOMT_URL,
+    golomt_name: envVars.GOLOMT_NAME,
+    golomt_password: envVars.GOLOMT_PASSWORD,
+    golomt_session_key: envVars.GOLOMT_SESSION_KEY,
+    golomt_iv_key: envVars.GOLOMT_IV_KEY,
+    golomt_access_code: envVars.GOLOMT_ACCESS_CODE,
+    golomt_client_id: envVars.GOLOMT_CLIENT_ID,
+    golomt_scope: envVars.GOLOMT_SCOPE,
+    golomt_register_no: envVars.GOLOMT_REGISTER_NO,
+    golomt_acct_no: envVars.GOLOMT_ACCT_NO,
+    golomt_acct_name: envVars.GOLOMT_ACCT_NAME,
+    golomt_bank_code: envVars.GOLOMT_BANK_CODE,
 };

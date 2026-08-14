@@ -1,0 +1,42 @@
+import Joi from 'joi';
+
+const withdraw = {
+    body: Joi.object().keys({
+        custid: Joi.string(),
+        type: Joi.string().required(),
+        registerNumber: Joi.string(),
+        acctName: Joi.string().required(),
+        acctNo: Joi.string().required(),
+        bank: Joi.string().required(),
+        amount: Joi.number().positive().required(),
+        currency: Joi.string().default('MNT'),
+        description: Joi.string(),
+    }),
+};
+
+const statement = {
+    body: Joi.object().keys({
+        accountId: Joi.string().required(),
+        startDate: Joi.string().required(),
+        endDate: Joi.string().required(),
+    }),
+};
+
+const account = {
+    body: Joi.object().keys({
+        type: Joi.string().required(),
+        bank: Joi.string().required(),
+        account: Joi.string().required(),
+        name: Joi.string().required(),
+        currency: Joi.string().default('MNT'),
+        statement: Joi.boolean().default(false),
+    }),
+};
+
+const rate = {
+    query: Joi.object().keys({
+        currency: Joi.string().default('MNT'),
+    }),
+};
+
+export { withdraw, statement, account, rate };

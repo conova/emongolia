@@ -63,9 +63,16 @@ export default class Client {
         });
 
         const isJson = rawResponse.headers.get('content-type')?.includes('application/json');
-        let res = undefined;
-        if (isJson) res = await rawResponse.json();
-        else res = await rawResponse.text();
+        const text = await rawResponse.text();
+        // some services (e.g. Golomt) send an encrypted body with a json content-type
+        let res: any = text;
+        if (isJson) {
+            try {
+                res = JSON.parse(text);
+            } catch (error) {
+                res = text;
+            }
+        }
 
         if (this._baseUrl.toLowerCase().includes('payon'))
             logger.info('Client HTTP CODE: ' + rawResponse.status + '::' + JSON.stringify(res));

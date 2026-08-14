@@ -3,6 +3,7 @@ import crypto from 'crypto';
 
 import config from '../../config/config';
 import logger from '../../config/logger';
+import BaseException from '../exception/BaseException';
 import Client from '../utils/client';
 import { UnknownObject } from '../utils/types';
 
@@ -101,6 +102,21 @@ export default class GolomtClient {
         return response;
     };
 
+    /// non-200 responses carry an AES encrypted body too — decrypt it so the
+    /// real bank error is readable instead of base64 ciphertext
+    private decodeError = (error: unknown) => {
+        if (!(error instanceof BaseException)) return error;
+
+        try {
+            const encoded = JSON.parse(error.message);
+            if (typeof encoded !== 'string' || encoded.length === 0) return error;
+
+            return new BaseException(this.decrypt(encoded), error.errorCode);
+        } catch (ignored) {
+            return error;
+        }
+    };
+
     public request = async (
         service: string,
         route: string,
@@ -113,7 +129,11 @@ export default class GolomtClient {
             // token may be expired: login again and retry once
             this.accessToken = null;
 
-            return await this.send(service, route, body, options);
+            try {
+                return await this.send(service, route, body, options);
+            } catch (retryError) {
+                throw this.decodeError(retryError);
+            }
         }
     };
 }

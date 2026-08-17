@@ -9,8 +9,8 @@ import { UnknownObject } from '../utils/types';
 
 export interface IGolomtRequestOptions {
     query?: Record<string, string>;
-    /// attach the X-Golomt-Code header (access code is obtained at login)
-    withAccessCode?: boolean;
+    /// attach the X-Golomt-Code header (bank issued value, GOLOMT_CODE env)
+    withGolomtCode?: boolean;
 }
 
 export const GOLOMT_SERVICE = {
@@ -25,7 +25,6 @@ export const GOLOMT_SERVICE = {
 @singleton()
 export default class GolomtClient {
     private accessToken: string | null = null;
-    private accessCode: string | null = null;
 
     private readonly client = new Client(config.golomt_url);
 
@@ -66,7 +65,8 @@ export default class GolomtClient {
         });
 
         this.accessToken = <string>response.token;
-        this.accessCode = <string>(response.accessCode ?? response.code ?? config.golomt_access_code);
+
+        logger.info('Golomt login: token ' + (this.accessToken ? 'received' : 'MISSING'));
 
         return this.accessToken;
     };
@@ -80,7 +80,7 @@ export default class GolomtClient {
             'X-Golomt-Checksum': this.checksum(JSON.stringify(body)),
             'X-Golomt-Service': service,
         };
-        if (options.withAccessCode && this.accessCode) headers['X-Golomt-Code'] = this.accessCode;
+        if (options.withGolomtCode) headers['X-Golomt-Code'] = config.golomt_code;
 
         let uri = route;
         if (options.query) uri += '?' + new URLSearchParams(options.query);

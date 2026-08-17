@@ -104,7 +104,7 @@ export default class GolomtService {
                     state: await stateGenerator(String(withdraw.id)),
                     scope: config.golomt_scope,
                 },
-                withAccessCode: true,
+                withGolomtCode: true,
             });
         } catch (error) {
             return await this.fail(withdraw.id, STATUS_WITHDRAW.TRANSFER_FAILED, error);

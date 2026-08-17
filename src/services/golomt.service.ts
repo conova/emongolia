@@ -122,21 +122,21 @@ export default class GolomtService {
         });
 
         // step 3: confirm the transaction
-        try {
-            const confirm = await this.golomtClient.request(GOLOMT_SERVICE.CONFIRM, '/v1/transaction/confirm', {
-                clientId: withdraw.clientId,
-                scope: withdraw.scope,
-                state: withdraw.state,
-                type: 'INB',
-            });
-
-            withdraw = await this.db.withdraw.update({
-                where: { id: withdraw.id },
-                data: { status: STATUS_WITHDRAW.CONFIRMED, confirmRes: <UnknownObject>confirm },
-            });
-        } catch (error) {
-            return await this.fail(withdraw.id, STATUS_WITHDRAW.CONFIRM_FAILED, error);
-        }
+        // try {
+        //     const confirm = await this.golomtClient.request(GOLOMT_SERVICE.CONFIRM, '/v1/transaction/confirm', {
+        //         clientId: withdraw.clientId,
+        //         scope: withdraw.scope,
+        //         state: withdraw.state,
+        //         type: 'INB',
+        //     });
+        //
+        //     withdraw = await this.db.withdraw.update({
+        //         where: { id: withdraw.id },
+        //         data: { status: STATUS_WITHDRAW.CONFIRMED, confirmRes: <UnknownObject>confirm },
+        //     });
+        // } catch (error) {
+        //     return await this.fail(withdraw.id, STATUS_WITHDRAW.CONFIRM_FAILED, error);
+        // }
 
         return withdraw;
     };

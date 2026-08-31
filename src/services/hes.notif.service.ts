@@ -11,17 +11,11 @@ export default class HESNotifService {
     public notif = async (params: UnknownObject, uri: string) => {
         try {
             const client = new Client(uri);
-            let headers: any = {
+            const headers: any = {
                 'Content-Type': 'application/json',
                 'X-Api-Key': config.hes_api_key,
-            };
 
-            if (uri.toLowerCase().includes('uat-integration')) {
-                headers = {
-                    'Content-Type': 'application/json',
-                    'X-Api-Key': 'be332f69-4804-40fd-92df-92b1f426df2a',
-                };
-            }
+            };
 
             await client.request(Client.METHOD_POST, '', {
                 body: params,

@@ -71,18 +71,26 @@ model withdraw {
 }
 
 model bank_transaction {
-  id          Int                @id @default(autoincrement())
-  accountId   String             @db.VarChar(100)
-  hash        String             @unique @db.VarChar(64)
-  refno       String?            @db.VarChar(100)
-  trandate    String?            @db.VarChar(50)
-  amount      Decimal?           @db.Decimal(20, 2)
-  drOrCr      String?            @db.VarChar(10)
-  relatedAccount String?         @db.VarChar(100) /// counterparty account number
-  description String?
-  record      Json
-  status      STATUS_TRANSACTION @default(PENDING) /// core system registration
-  createdAt   DateTime           @default(now())
+  id             Int                @id @default(autoincrement())
+  accountId      String             @db.VarChar(100)
+  hash           String             @unique @db.VarChar(64)
+  tranId         String?            @db.VarChar(100)
+  tranDate       String?            @db.VarChar(50)
+  tranPostedDate String?            @db.VarChar(50)
+  currency       String?            @db.VarChar(10)
+  amount         Decimal?           @db.Decimal(20, 2)
+  balance        Decimal?           @db.Decimal(20, 2)
+  drOrCr         String?            @db.VarChar(10)
+  relatedAccount String?            @db.VarChar(100) /// counterparty account number
+  accName        String?            @db.VarChar(255) /// counterparty account name
+  branchId       String?            @db.VarChar(50)
+  tellerId       String?            @db.VarChar(50)
+  journalNo      String?            @db.VarChar(100)
+  exchRate       Decimal?           @db.Decimal(20, 6)
+  description    String?
+  record         Json /// full raw statement record
+  status         STATUS_TRANSACTION @default(PENDING) /// core system registration
+  createdAt      DateTime           @default(now())
 }
 
 enum STATUS_TRANSACTION {

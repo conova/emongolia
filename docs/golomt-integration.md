@@ -24,33 +24,43 @@ X-Api-Key: <HES_API_KEY>
 
 Body — гүйлгээний массив (нэг удаад дээд тал нь 100):
 
+Гүйлгээ бүр банкнаас ирсэн бүтцээрээ явна — зөвхөн `id` талбар gateway-ийн
+дугаараар солигдоно:
+
 ```json
 [
     {
         "id": 15,
-        "accountId": "1105001234",
-        "tranId": "122213110",
-        "tranPostedDate": "2026-08-10",
-        "currency": "MNT",
-        "amount": 150000.0,
-        "drOrCr": "CR",
-        "relatedAccount": "5041234567",
-        "description": "Fee CUST100234"
+        "recNum": 1,
+        "tranId": "GB121904",
+        "tranDate": "2025-10-25",
+        "drOrCr": "Debit",
+        "tranAmount": 0.28,
+        "tranDesc": "Данс хөтөлсний шимтгэл",
+        "tranPostedDate": "2025-10-25T12:14:04",
+        "tranCrnCode": "USD",
+        "exchRate": 3591.13,
+        "balance": "808.09",
+        "accName": "",
+        "accNum": ""
     }
 ]
 ```
 
-| Талбар         | Төрөл          | Тайлбар                                        |
-| -------------- | -------------- | ---------------------------------------------- |
-| id             | int            | Gateway дээрх гүйлгээний дугаар (давхардахгүй) |
-| accountId      | string         | Хуулга татсан данс (өөрийн данс)               |
-| tranId         | string\|null   | Банкны гүйлгээний дугаар                       |
-| tranPostedDate | string\|null   | Гүйлгээ бүртгэгдсэн огноо                      |
-| currency       | string\|null   | Валют                                          |
-| amount         | number\|null   | Дүн                                            |
-| drOrCr         | string\|null   | Дебит/Кредит                                   |
-| relatedAccount | string\|null   | Харьцсан данс                                  |
-| description    | string\|null   | Гүйлгээний утга                                |
+| Талбар         | Төрөл        | Тайлбар                                        |
+| -------------- | ------------ | ---------------------------------------------- |
+| id             | int          | Gateway дээрх гүйлгээний дугаар (давхардахгүй) |
+| tranId         | string       | Банкны гүйлгээний дугаар                       |
+| tranDate       | string       | Гүйлгээний огноо                               |
+| tranPostedDate | string       | Гүйлгээ бүртгэгдсэн огноо/цаг                  |
+| drOrCr         | string       | Debit/Credit                                   |
+| tranAmount     | number       | Дүн                                            |
+| tranCrnCode    | string       | Валют                                          |
+| exchRate       | number       | Ханш                                           |
+| balance        | string       | Дансны үлдэгдэл                                |
+| tranDesc       | string       | Гүйлгээний утга                                |
+| accName/accNum | string       | Харьцсан дансны нэр/дугаар                     |
+| recNum         | int          | Банкны хуулга доторх мөрийн дугаар             |
 
 **Хариу:** HTTP `200` = амжилттай. 200 ирсэн тохиолдолд gateway гүйлгээнүүдийг
 `REGISTERED` болгоно. Өөр ямар ч хариу ирвэл `PENDING` хэвээр үлдэж дараагийн

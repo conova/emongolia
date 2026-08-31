@@ -164,26 +164,30 @@ export default class GolomtService {
 
         // only newly arrived transactions are inserted — the hash makes re-fetches idempotent
         const result = await this.db.bank_transaction.createMany({
-            data: records.map((record) => {
-                const amount = Number(record.amount ?? record.tranAmount);
-
-                return {
-                    accountId,
-                    hash: crypto
-                        .createHash('sha256')
-                        .update(accountId + JSON.stringify(record))
-                        .digest('hex'),
-                    refno: <string>(record.tranId ?? record.refno ?? record.journalNo ?? null),
-                    trandate: <string>(record.tranDate ?? record.tranPostedDate ?? record.date ?? null),
-                    amount: isNaN(amount) ? null : amount,
-                    drOrCr: <string>(record.drOrCr ?? null),
-                    relatedAccount: <string>(
-                        (record.accNum ?? record.relatedAccount ?? record.contraAccount ?? record.accountNo ?? null)
-                    ),
-                    description: <string>(record.description ?? record.particulars ?? record.tranDesc ?? null),
-                    record,
-                };
-            }),
+            data: records.map((record) => ({
+                accountId,
+                hash: crypto
+                    .createHash('sha256')
+                    .update(accountId + JSON.stringify(record))
+                    .digest('hex'),
+                tranId: this.asString(record.tranId ?? record.refno),
+                tranDate: this.asString(record.tranDate ?? record.date),
+                tranPostedDate: this.asString(record.tranPostedDate),
+                currency: this.asString(record.currency ?? record.tranCrnCode),
+                amount: this.asNumber(record.amount ?? record.tranAmount),
+                balance: this.asNumber(record.balance),
+                drOrCr: this.asString(record.drOrCr),
+                relatedAccount: this.asString(
+                    record.accNum ?? record.relatedAccount ?? record.contraAccount ?? record.accountNo
+                ),
+                accName: this.asString(record.accName ?? record.acctName),
+                branchId: this.asString(record.branchId ?? record.txnBranchId),
+                tellerId: this.asString(record.tellerId),
+                journalNo: this.asString(record.journalNo),
+                exchRate: this.asNumber(record.exchRate),
+                description: this.asString(record.description ?? record.particulars ?? record.tranDesc),
+                record,
+            })),
             skipDuplicates: true,
         });
 
@@ -243,21 +247,11 @@ export default class GolomtService {
 
         if (pending.length === 0) return { total: 0, sent: 0 };
 
-        const payload = pending.map((txn) => {
-            const record = <UnknownObject>txn.record;
-
-            return {
-                id: txn.id,
-                accountId: txn.accountId,
-                tranId: record.tranId ?? txn.refno,
-                tranPostedDate: record.tranPostedDate ?? txn.trandate,
-                currency: record.currency ?? null,
-                amount: txn.amount !== null ? Number(txn.amount) : null,
-                drOrCr: txn.drOrCr,
-                relatedAccount: txn.relatedAccount,
-                description: txn.description,
-            };
-        });
+        // the raw bank record as-is, id overridden with the gateway id
+        const payload = pending.map((txn) => ({
+            ...(<UnknownObject>txn.record),
+            id: txn.id,
+        }));
 
         const notified = await this.hesNotifService.notif(
             <UnknownObject>(<unknown>payload),
@@ -282,6 +276,15 @@ export default class GolomtService {
             where: { id },
             data: { status, error: message },
         });
+    };
+
+    private asString = (value: unknown): string | null => (value === null || value === undefined ? null : String(value));
+
+    private asNumber = (value: unknown): number | null => {
+        if (value === null || value === undefined || value === '') return null;
+
+        const parsed = Number(value);
+        return isNaN(parsed) ? null : parsed;
     };
 
     private formatDate = (date: Date) => {

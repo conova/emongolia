@@ -53,6 +53,30 @@ export default class GolomtRoute {
                 validate(golomtValidation.rate),
                 this._controller.rate
             );
+        this._router
+            .route('/balance')
+            .post(
+                this._authentication.verifyIp(),
+                this._authentication.verifyApiKey(),
+                validate(golomtValidation.balance),
+                this._controller.balance
+            );
+        this._router
+            .route('/account/details')
+            .post(
+                this._authentication.verifyIp(),
+                this._authentication.verifyApiKey(),
+                validate(golomtValidation.accountDetails),
+                this._controller.accountDetails
+            );
+        this._router
+            .route('/account/check')
+            .post(
+                this._authentication.verifyIp(),
+                this._authentication.verifyApiKey(),
+                validate(golomtValidation.accountCheck),
+                this._controller.accountCheck
+            );
 
         return this._router;
     }

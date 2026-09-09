@@ -193,6 +193,37 @@ X-Api-Key: <X_API_KEY>
 
 Голомтоос шууд лавлаад хариулна (хадгалахгүй).
 
+#### POST /api/golomt/balance — дансны үлдэгдэл (OBI 5.1, ACCTBALINQ)
+
+```json
+{ "accountId": "1100100101", "registerNo": "XX01010101" }
+```
+
+Хариу: `accountId`, `accountName`, `currency`, `balanceLL[]` (`type` = AVAIL,
+`amount: { value, currency }`).
+
+#### POST /api/golomt/account/details — харилцах дансны дэлгэрэнгүй (OBI 5.4, OPERACCTDET)
+
+```json
+{ "accountId": "1100100101", "registerNo": "XX01010101" }
+```
+
+Хариу: `accountNumber`, `currency`, `customerName`, `accountName`,
+`freezeStatusCode`, `freezeReasonCode`, `openDate`, `status`, `productName`,
+`intRate`, `isRelParty`, `type: { schemeCode, schemeType }` г.м.
+
+#### POST /api/golomt/account/check — данс эзэмшигчийн мэдээлэл (OBI 5.12, ACCCHK)
+
+```json
+{ "accountId": "1100100101", "bankCode": "05" }
+```
+
+`bankCode` заавал биш — Голомтын бус данс шалгахад банкны код дамжуулна.
+Голомтын данс бол `markedAccountName`, `status` буцна; бусад банкны данс бол
+`vrfctn`, `maskedAccountName`, `bankId`, `errDesc` зэрэг буцна.
+
+Гурвуулаа Голомтоос шууд лавлаж хариулдаг — DB-д хадгалахгүй.
+
 ### 2.3 Автомат жобууд
 
 | Жоб       | Давтамж | Үүрэг                                                                  |

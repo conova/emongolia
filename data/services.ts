@@ -311,4 +311,23 @@ export const services = [
         ],
         status: STATUS_SERVICES.ACTIVE,
     },
+    {
+        key: 'GS10036_getChildInfo',
+        code: SERVICES.CHILD_INFO,
+        wsdl: citizen,
+        desc: 'Хүүхдийн мэдээлэл дамжуулах сервис',
+        params: [
+            {
+                param: 'registeredNum',
+                desc: 'Бүртгэлийн дугаар',
+                type: 'string',
+            },
+            {
+                param: 'regnum',
+                desc: 'Регистрийн дугаар',
+                type: 'string',
+            },
+        ],
+        status: STATUS_SERVICES.ACTIVE,
+    },
 ];

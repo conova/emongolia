@@ -39,4 +39,25 @@ const rate = {
     }),
 };
 
-export { withdraw, statement, account, rate };
+const balance = {
+    body: Joi.object().keys({
+        accountId: Joi.string().required(),
+        registerNo: Joi.string().required(),
+    }),
+};
+
+const accountDetails = {
+    body: Joi.object().keys({
+        accountId: Joi.string().required(),
+        registerNo: Joi.string().required(),
+    }),
+};
+
+const accountCheck = {
+    body: Joi.object().keys({
+        accountId: Joi.string().required(),
+        bankCode: Joi.string(),
+    }),
+};
+
+export { withdraw, statement, account, rate, balance, accountDetails, accountCheck };

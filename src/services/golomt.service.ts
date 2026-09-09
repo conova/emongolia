@@ -151,13 +151,7 @@ export default class GolomtService {
                 startDate,
                 endDate,
             },
-            {
-                query: {
-                    client_id: config.golomt_client_id,
-                    state: await stateGenerator(accountId),
-                    scope: config.golomt_scope,
-                },
-            }
+            { query: await this.scopeQuery(accountId) }
         );
 
         const records = this.extractRecords(response);
@@ -199,6 +193,34 @@ export default class GolomtService {
     /// exchange rate straight from Golomt, no persistence
     public rate = async (currency: string) => {
         return await this.golomtClient.request(GOLOMT_SERVICE.RATE, '/v1/utility/rate/inq', { currency });
+    };
+
+    /// OBI 5.1 — account balance
+    public balance = async (accountId: string, registerNo: string) => {
+        return await this.golomtClient.request(
+            GOLOMT_SERVICE.BALANCE,
+            '/v1/account/balance/inq',
+            { accountId, registerNo },
+            { query: await this.scopeQuery(accountId) }
+        );
+    };
+
+    /// OBI 5.4 — operative account details
+    public accountDetails = async (accountId: string, registerNo: string) => {
+        return await this.golomtClient.request(
+            GOLOMT_SERVICE.ACCOUNT_DETAILS,
+            '/v1/account/operative/details',
+            { accountId, registerNo },
+            { query: await this.scopeQuery(accountId) }
+        );
+    };
+
+    /// OBI 5.12 — account holder info (Golomt and other banks); bankCode is optional
+    public accountCheck = async (accountId: string, bankCode?: string) => {
+        const body: UnknownObject = { accountId };
+        if (bankCode) body.bankCode = bankCode;
+
+        return await this.golomtClient.request(GOLOMT_SERVICE.ACCOUNT_CHECK, '/v1/account/check/account', body);
     };
 
     /// fetches statements for every account flagged with statement = true
@@ -277,6 +299,12 @@ export default class GolomtService {
             data: { status, error: message },
         });
     };
+
+    private scopeQuery = async (unique: string) => ({
+        client_id: config.golomt_client_id,
+        state: await stateGenerator(unique),
+        scope: config.golomt_scope,
+    });
 
     private asString = (value: unknown): string | null => (value === null || value === undefined ? null : String(value));
 

@@ -70,6 +70,22 @@ export default class GolomtRoute {
                 this._controller.accountDetails
             );
         this._router
+            .route('/account/list')
+            .post(
+                this._authentication.verifyIp(),
+                this._authentication.verifyApiKey(),
+                validate(golomtValidation.accountList),
+                this._controller.accountList
+            );
+        this._router
+            .route('/account/type')
+            .post(
+                this._authentication.verifyIp(),
+                this._authentication.verifyApiKey(),
+                validate(golomtValidation.accountType),
+                this._controller.accountType
+            );
+        this._router
             .route('/account/check')
             .post(
                 this._authentication.verifyIp(),

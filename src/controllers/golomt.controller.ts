@@ -74,6 +74,22 @@ export default class GolomtController {
         JsonResponse(res, details);
     });
 
+    accountList = catchAsync(async (req: Request, res: Response) => {
+        const { registerNo } = pick(req.body, ['registerNo']);
+
+        const result = await this.golomtService.accountList(<string>registerNo);
+
+        JsonResponse(res, result);
+    });
+
+    accountType = catchAsync(async (req: Request, res: Response) => {
+        const { accountId, registerNo } = pick(req.body, ['accountId', 'registerNo']);
+
+        const result = await this.golomtService.accountType(<string>accountId, <string>registerNo);
+
+        JsonResponse(res, result);
+    });
+
     accountCheck = catchAsync(async (req: Request, res: Response) => {
         const { accountId, bankCode } = pick(req.body, ['accountId', 'bankCode']);
 

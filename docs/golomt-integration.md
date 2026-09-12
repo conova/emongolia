@@ -212,6 +212,25 @@ X-Api-Key: <X_API_KEY>
 `freezeStatusCode`, `freezeReasonCode`, `openDate`, `status`, `productName`,
 `intRate`, `isRelParty`, `type: { schemeCode, schemeType }` г.м.
 
+#### POST /api/golomt/account/list — дансны жагсаалт татах (OBI 5.11, ACCTLST)
+
+```json
+{ "registerNo": "АА00000000" }
+```
+
+Хариу нь дансуудыг гурван бүлгээр буцаана: `operAccounts[]` (харилцах),
+`depoAccounts[]` (хадгаламж), `loanAccounts[]` (зээл). Бүлэг бүрийн элемент:
+`accountId`, `accountName`, `shortName`, `currency`, `schemeType`, `branchId`,
+`isSocialPayConnected` [Y, N].
+
+#### POST /api/golomt/account/type — дансны төрөл шалгах (OBI 5.2, ACCTTYPEINQ)
+
+```json
+{ "accountId": "1100100101" }
+```
+
+`registerNo` заавал биш.
+
 #### POST /api/golomt/account/check — данс эзэмшигчийн мэдээлэл (OBI 5.12, ACCCHK)
 
 ```json

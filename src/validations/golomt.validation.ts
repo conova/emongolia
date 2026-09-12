@@ -53,6 +53,19 @@ const accountDetails = {
     }),
 };
 
+const accountList = {
+    body: Joi.object().keys({
+        registerNo: Joi.string().required(),
+    }),
+};
+
+const accountType = {
+    body: Joi.object().keys({
+        accountId: Joi.string().required(),
+        registerNo: Joi.string(),
+    }),
+};
+
 const accountCheck = {
     body: Joi.object().keys({
         accountId: Joi.string().required(),
@@ -60,4 +73,4 @@ const accountCheck = {
     }),
 };
 
-export { withdraw, statement, account, rate, balance, accountDetails, accountCheck };
+export { withdraw, statement, account, rate, balance, accountDetails, accountList, accountType, accountCheck };

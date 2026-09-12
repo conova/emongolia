@@ -215,6 +215,26 @@ export default class GolomtService {
         );
     };
 
+    /// OBI 5.11 — customer account list (operative / deposit / loan)
+    public accountList = async (registerNo: string) => {
+        return await this.golomtClient.request(
+            GOLOMT_SERVICE.ACCOUNT_LIST,
+            '/v1/account/list',
+            { registerNo },
+            { query: await this.scopeQuery(registerNo) }
+        );
+    };
+
+    /// OBI 5.2 — account type / scheme lookup; registerNo is optional
+    public accountType = async (accountId: string, registerNo?: string) => {
+        const body: UnknownObject = { accountId };
+        if (registerNo) body.registerNo = registerNo;
+
+        return await this.golomtClient.request(GOLOMT_SERVICE.ACCOUNT_TYPE, '/v1/account/type/inq', body, {
+            query: await this.scopeQuery(accountId),
+        });
+    };
+
     /// OBI 5.12 — account holder info (Golomt and other banks); bankCode is optional
     public accountCheck = async (accountId: string, bankCode?: string) => {
         const body: UnknownObject = { accountId };

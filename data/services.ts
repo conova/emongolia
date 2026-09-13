@@ -8,6 +8,7 @@ const legalEntity = 'https://xyp.gov.mn/legal-entity-1.3.0/ws?WSDL';
 const transport = 'https://xyp.gov.mn/transport-1.3.0/ws?WSDL';
 const insurance = 'https://xyp.gov.mn/insurance-1.3.0/ws?WSDL';
 const tax = 'https://xyp.gov.mn/tax-1.3.0/ws?WSDL';
+const kids = 'https://xyp.gov.mn/citizen-1.5.0/ws?WSDL';
 
 export const services = [
     {
@@ -314,7 +315,7 @@ export const services = [
     {
         key: 'GS10036_getChildInfo',
         code: SERVICES.CHILD_INFO,
-        wsdl: citizen,
+        wsdl: kids,
         desc: 'Хүүхдийн мэдээлэл дамжуулах сервис',
         params: [
             {

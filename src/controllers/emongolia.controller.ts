@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import { autoInjectable } from 'tsyringe';
 
-import { Prisma, STATUS_REQUEST } from '@prisma/client';
+import { Prisma, SERVICES, STATUS_REQUEST } from '@prisma/client';
 import { JsonResponse, stateGenerator } from '../utils/utils';
 import { eMongoliaService, WsdlService } from '../services';
 import { IEMongoliaServiceStructure } from '../services/e.mongolia.service';
@@ -117,6 +117,16 @@ export default class eMongoliaController {
                     return;
                 }
                 res.redirect('/dan/result?result=failed&errorMessage=Алдаа гарлаа');
+                return;
+            }
+
+            // хүсэлтэд хүүхдийн мэдээллийн сервис багтсан бол result хуудас
+            // дамжуулан өөр app route руу чиглүүлнэ
+            const services = <IRequestService[]>(<unknown>request.services);
+            if (services.some((service) => SERVICES.CHILD_INFO === service.code)) {
+                res.redirect(
+                    '/dan/result?result=success&redirect=' + encodeURIComponent('/child_account_success')
+                );
                 return;
             }
 

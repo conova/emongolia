@@ -80,9 +80,13 @@
             const result = searchParams.get('result');
             const action = searchParams.get('action');
             const errorMessage = searchParams.get('errorMessage');
+            const redirect = searchParams.get('redirect');
             document.getElementById('result').innerText = result === 'success' ? 'Амжилттай' : 'Алдаа гарлаа!';
 
-            const target = (action ?? '/main?') + (result === 'success' ? 'success' : 'fail');
+            // a full route may be passed in; only same-origin paths are honoured,
+            // so "//evil.com" or an absolute url can never be redirected to
+            const route = redirect && /^\/[^/]/.test(redirect) ? redirect : null;
+            const target = route ?? (action ?? '/main?') + (result === 'success' ? 'success' : 'fail');
             const payload = {
                 action: 'navigate_main',
                 target: target,

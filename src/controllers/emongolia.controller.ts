@@ -124,9 +124,7 @@ export default class eMongoliaController {
             // дамжуулан өөр app route руу чиглүүлнэ
             const services = <IRequestService[]>(<unknown>request.services);
             if (services.some((service) => SERVICES.CHILD_INFO === service.code)) {
-                res.redirect(
-                    '/dan/result?result=success&redirect=' + encodeURIComponent('/child_account_success')
-                );
+                res.redirect('/dan/result?result=success&redirect=' + encodeURIComponent('/child_account_document'));
                 return;
             }
 

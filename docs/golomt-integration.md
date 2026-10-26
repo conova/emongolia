@@ -63,7 +63,7 @@ Body — гүйлгээний массив (нэг удаад дээд тал н
 | recNum         | int          | Банкны хуулга доторх мөрийн дугаар             |
 | relatedAccount | string/null  | Харьцсан дансны дугаар (gateway нэмнэ)         |
 | relatedAccountName | string   | Харьцсан дансны нэр — байвал л ирнэ            |
-| rate           | object/null  | Гүйлгээний валютын ханш (Голомт rate/inq хариу) |
+| rate           | number/null  | Хуулгын `exchRate` ханш                        |
 
 **Хариу:** HTTP `200` = амжилттай. 200 ирсэн тохиолдолд gateway гүйлгээнүүдийг
 `REGISTERED` болгоно. Өөр ямар ч хариу ирвэл `PENDING` хэвээр үлдэж дараагийн

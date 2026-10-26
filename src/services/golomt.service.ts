@@ -289,26 +289,14 @@ export default class GolomtService {
 
         if (pending.length === 0) return { total: 0, sent: 0 };
 
-        // one rate inquiry per currency in the batch; a failed inquiry does not block registration
-        const rates: Record<string, unknown> = {};
-        for (const currency of new Set(pending.map((txn) => txn.currency ?? 'MNT'))) {
-            try {
-                rates[currency] = await this.rate(currency);
-            } catch (error) {
-                const message = error instanceof Error ? error.message : <string>error;
-                logger.error('Golomt rate ' + currency + ' failed: ' + message);
-                rates[currency] = null;
-            }
-        }
-
         // the raw bank record as-is, id overridden with the gateway id,
-        // plus the counterparty account (name only when present) and the rate info
+        // plus the counterparty account (name only when present) and the statement's exchange rate
         const payload = pending.map((txn) => ({
             ...(<UnknownObject>txn.record),
             id: txn.id,
             relatedAccount: txn.relatedAccount || null,
             ...(txn.accName ? { relatedAccountName: txn.accName } : {}),
-            rate: rates[txn.currency ?? 'MNT'],
+            rate: txn.exchRate === null ? null : Number(txn.exchRate),
         }));
 
         const notified = await this.hesNotifService.notif(

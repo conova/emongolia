@@ -156,32 +156,53 @@ export default class GolomtService {
 
         const records = this.extractRecords(response);
 
-        // only newly arrived transactions are inserted — the hash makes re-fetches idempotent
+        const rows = records.map((record) => ({
+            accountId,
+            tranId: this.asString(record.tranId ?? record.refno),
+            tranDate: this.asString(record.tranDate ?? record.date),
+            tranPostedDate: this.asString(record.tranPostedDate),
+            currency: this.asString(record.currency ?? record.tranCrnCode),
+            amount: this.asNumber(record.amount ?? record.tranAmount),
+            balance: this.asNumber(record.balance),
+            drOrCr: this.asString(record.drOrCr),
+            relatedAccount: this.asString(
+                record.accNum ?? record.relatedAccount ?? record.contraAccount ?? record.accountNo
+            ),
+            accName: this.asString(record.accName ?? record.acctName),
+            branchId: this.asString(record.branchId ?? record.txnBranchId),
+            tellerId: this.asString(record.tellerId),
+            journalNo: this.asString(record.journalNo),
+            exchRate: this.asNumber(record.exchRate),
+            description: this.asString(record.description ?? record.particulars ?? record.tranDesc),
+            record,
+        }));
+
+        // rows saved earlier (including ones hashed from the full raw record) are matched by their identity fields
+        const tranIds = rows.map((row) => row.tranId).filter((id): id is string => id !== null);
+        const existing = await this.db.bank_transaction.findMany({
+            where: { accountId, tranId: { in: tranIds } },
+            select: { tranId: true, tranDate: true, tranPostedDate: true, drOrCr: true, amount: true },
+        });
+        const existingKeys = new Set(
+            existing.map((row) =>
+                this.transactionKey({ ...row, amount: row.amount === null ? null : Number(row.amount) })
+            )
+        );
+
+        // the hash covers only fields that identify the transaction — volatile fields such as balance
+        // or row numbers can change between fetches and must not make the same transaction look new
         const result = await this.db.bank_transaction.createMany({
-            data: records.map((record) => ({
-                accountId,
-                hash: crypto
-                    .createHash('sha256')
-                    .update(accountId + JSON.stringify(record))
-                    .digest('hex'),
-                tranId: this.asString(record.tranId ?? record.refno),
-                tranDate: this.asString(record.tranDate ?? record.date),
-                tranPostedDate: this.asString(record.tranPostedDate),
-                currency: this.asString(record.currency ?? record.tranCrnCode),
-                amount: this.asNumber(record.amount ?? record.tranAmount),
-                balance: this.asNumber(record.balance),
-                drOrCr: this.asString(record.drOrCr),
-                relatedAccount: this.asString(
-                    record.accNum ?? record.relatedAccount ?? record.contraAccount ?? record.accountNo
-                ),
-                accName: this.asString(record.accName ?? record.acctName),
-                branchId: this.asString(record.branchId ?? record.txnBranchId),
-                tellerId: this.asString(record.tellerId),
-                journalNo: this.asString(record.journalNo),
-                exchRate: this.asNumber(record.exchRate),
-                description: this.asString(record.description ?? record.particulars ?? record.tranDesc),
-                record,
-            })),
+            data: rows
+                .filter((row) => row.tranId === null || !existingKeys.has(this.transactionKey(row)))
+                .map((row) => ({
+                    ...row,
+                    hash: crypto
+                        .createHash('sha256')
+                        .update(
+                            accountId + (row.tranId === null ? JSON.stringify(row.record) : this.transactionKey(row))
+                        )
+                        .digest('hex'),
+                })),
             skipDuplicates: true,
         });
 
@@ -330,7 +351,16 @@ export default class GolomtService {
         scope: config.golomt_scope,
     });
 
-    private asString = (value: unknown): string | null => (value === null || value === undefined ? null : String(value));
+    private transactionKey = (row: {
+        tranId: string | null;
+        tranDate: string | null;
+        tranPostedDate: string | null;
+        drOrCr: string | null;
+        amount: number | null;
+    }) => [row.tranId, row.tranDate, row.tranPostedDate, row.drOrCr, row.amount].join('|');
+
+    private asString = (value: unknown): string | null =>
+        value === null || value === undefined ? null : String(value);
 
     private asNumber = (value: unknown): number | null => {
         if (value === null || value === undefined || value === '') return null;

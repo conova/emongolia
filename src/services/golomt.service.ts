@@ -310,11 +310,18 @@ export default class GolomtService {
 
         if (pending.length === 0) return { total: 0, sent: 0 };
 
-        // the raw bank record as-is, id overridden with the gateway id,
-        // plus the counterparty account (name only when present) and the statement's exchange rate
+        const accounts = await this.db.bank_account.findMany({
+            where: { account: { in: [...new Set(pending.map((txn) => txn.accountId))] } },
+        });
+        const accountNames = new Map(accounts.map((account) => [account.account, account.name]));
+
+        // the raw bank record as-is, id overridden with the gateway id, plus the statement's own account,
+        // the counterparty account (name only when present) and the statement's exchange rate
         const payload = pending.map((txn) => ({
             ...(<UnknownObject>txn.record),
             id: txn.id,
+            accountId: txn.accountId,
+            accountName: accountNames.get(txn.accountId) ?? null,
             relatedAccount: txn.relatedAccount || null,
             ...(txn.accName ? { relatedAccountName: txn.accName } : {}),
             rate: txn.exchRate === null ? null : Number(txn.exchRate),

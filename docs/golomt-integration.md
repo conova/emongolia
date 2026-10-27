@@ -47,23 +47,25 @@ Body — гүйлгээний массив (нэг удаад дээд тал н
 ]
 ```
 
-| Талбар         | Төрөл        | Тайлбар                                        |
-| -------------- | ------------ | ---------------------------------------------- |
-| id             | int          | Gateway дээрх гүйлгээний дугаар (давхардахгүй) |
-| tranId         | string       | Банкны гүйлгээний дугаар                       |
-| tranDate       | string       | Гүйлгээний огноо                               |
-| tranPostedDate | string       | Гүйлгээ бүртгэгдсэн огноо/цаг                  |
-| drOrCr         | string       | Debit/Credit                                   |
-| tranAmount     | number       | Дүн                                            |
-| tranCrnCode    | string       | Валют                                          |
-| exchRate       | number       | Ханш                                           |
-| balance        | string       | Дансны үлдэгдэл                                |
-| tranDesc       | string       | Гүйлгээний утга                                |
-| accName/accNum | string       | Харьцсан дансны нэр/дугаар                     |
-| recNum         | int          | Банкны хуулга доторх мөрийн дугаар             |
-| relatedAccount | string/null  | Харьцсан дансны дугаар (gateway нэмнэ)         |
-| relatedAccountName | string   | Харьцсан дансны нэр — байвал л ирнэ            |
-| rate           | number/null  | Хуулгын `exchRate` ханш                        |
+| Талбар             | Төрөл       | Тайлбар                                        |
+| ------------------ | ----------- | ---------------------------------------------- |
+| id                 | int         | Gateway дээрх гүйлгээний дугаар (давхардахгүй) |
+| tranId             | string      | Банкны гүйлгээний дугаар                       |
+| tranDate           | string      | Гүйлгээний огноо                               |
+| tranPostedDate     | string      | Гүйлгээ бүртгэгдсэн огноо/цаг                  |
+| drOrCr             | string      | Debit/Credit                                   |
+| tranAmount         | number      | Дүн                                            |
+| tranCrnCode        | string      | Валют                                          |
+| exchRate           | number      | Ханш                                           |
+| balance            | string      | Дансны үлдэгдэл                                |
+| tranDesc           | string      | Гүйлгээний утга                                |
+| accName/accNum     | string      | Харьцсан дансны нэр/дугаар                     |
+| recNum             | int         | Банкны хуулга доторх мөрийн дугаар             |
+| accountId          | string      | Хуулга авсан дансны дугаар (gateway нэмнэ)     |
+| accountName        | string/null | Хуулга авсан дансны нэр (`bank_account`-аас)   |
+| relatedAccount     | string/null | Харьцсан дансны дугаар (gateway нэмнэ)         |
+| relatedAccountName | string      | Харьцсан дансны нэр — байвал л ирнэ            |
+| rate               | number/null | Хуулгын `exchRate` ханш                        |
 
 **Хариу:** HTTP `200` = амжилттай. 200 ирсэн тохиолдолд gateway гүйлгээнүүдийг
 `REGISTERED` болгоно. Өөр ямар ч хариу ирвэл `PENDING` хэвээр үлдэж дараагийн
